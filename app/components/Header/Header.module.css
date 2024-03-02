@@ -1,16 +1,20 @@
 .header {
+    width: 100%;
+    padding: 0 40px;
+    height: 80px;
+}
+
+.header > div {
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: var(--max-width);
-    width: 100%;
     margin: 0 auto;
-    padding: 0 40px;
-    height: 80px;
     user-select: none;
 }
 
-.header > a {
+.heading {
     font-family: var(--font-heading);
     display: inline-flex;
     font-size: 32px;
@@ -19,16 +23,16 @@
     color: var(--foreground-1);
 }
 
-.header > nav {
+.header > div > nav {
     flex: 1;
 }
 
-.header > :not(:nth-child(2)) {
+.header > div > :not(:nth-child(2)) {
     width: 120px;
 }
 
 @media screen and (max-width: 768px) {
-    .header > nav {
+    .header > div > nav {
         display: none;
     }
 }

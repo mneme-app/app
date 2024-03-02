@@ -2,7 +2,7 @@
     position: absolute;
     width: 250px;
     padding: 12px;
-    border-radius: 4px;
+    border-radius: 3px;
     background-color: var(--background-3);
     left: calc(100% + 32px);
     top: calc(50% + 10px);
@@ -24,6 +24,8 @@
 .passwordTooltip > p {
     font-size: 14px;
     margin-bottom: 14px;
+    line-height: 20px;
+    color: var(--foreground-1);
 }
 
 .passwordTooltip > ul {
@@ -36,7 +38,7 @@
     align-items: center;
     font-size: 14px;
     line-height: 18px;
-    font-weight: 300;
+    color: var(--foreground-3);
 }
 
 .passwordTooltip > ul > li::before {
@@ -46,8 +48,7 @@
     height: 4px;
     border-radius: 50%;
     margin-right: 8px;
-    background-color: var(--accent-1);
-    color: var(--accent-foreground);
+    background-color: var(--error);
 }
 
 .passwordTooltip > ul > li.weakness > span {
@@ -70,7 +71,7 @@
 }
 
 .passwordTooltip > ul > li.weakness > div path {
-    fill: var(--accent-3);
+    fill: var(--success);
 }
 
 .passwordTooltip > ul > li.weakness::before {

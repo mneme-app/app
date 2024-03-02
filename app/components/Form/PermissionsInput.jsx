@@ -1,8 +1,9 @@
 "use client";
 
-import { Input, Label, ListAdd } from "@client";
-import { useState, useEffect } from "react";
 import { useStore, useModals } from "@/store/store";
+import styles from "./Permissions.module.css";
+import { useState, useEffect } from "react";
+import { Input } from "@client";
 
 export function PermissionsInput({ permissions, setter }) {
     const [allWrite, setAllWrite] = useState(
@@ -84,80 +85,155 @@ export function PermissionsInput({ permissions, setter }) {
     }, [allWrite, allRead, usersWrite, usersRead, groupsWrite, groupsRead]);
 
     return (
-        <div className="formGrid">
-            <Input
-                type="checkbox"
-                label="Allow All Users to Edit?"
-                value={allWrite}
-                onChange={() => setAllWrite(!allWrite)}
-            />
+        <div className={styles.form}>
+            <div className={styles.toggles}>
+                <Input
+                    type="toggle"
+                    label="Allow all users to edit"
+                    value={allWrite}
+                    onChange={() => setAllWrite(!allWrite)}
+                />
+
+                <Input
+                    type="toggle"
+                    label="Allow all users to view"
+                    disabled={allWrite}
+                    value={allRead || allWrite}
+                    onChange={() => setAllRead(!allRead)}
+                />
+            </div>
 
             <Input
-                type="checkbox"
-                label="Allow All Users to Read?"
+                type="select"
                 disabled={allWrite}
-                value={allRead}
-                onChange={() => setAllRead(!allRead)}
+                choices={user.associates.map((x) => x.username)}
+                label="Associates with permission to edit"
+                description="Pick associates that you want to be able to edit this resource"
+                value={usersWrite.map((x) => x.username)}
+                onChange={(val) => {
+                    const member = user?.associates?.find(
+                        (x) => x.username === val,
+                    );
+
+                    if (member) {
+                        if (usersWrite.map((x) => x.id).includes(member.id)) {
+                            setUsersWrite((prev) =>
+                                prev.filter((x) => x.id !== member.id),
+                            );
+                        } else {
+                            setUsersWrite((prev) => [...prev, member]);
+                        }
+                    }
+                }}
+                removeItem={(val) => {
+                    const member = user?.associates?.find(
+                        (x) => x.username === val,
+                    );
+                    if (member) {
+                        setUsersWrite((prev) =>
+                            prev.filter((x) => x.id !== member.id),
+                        );
+                    }
+                }}
+                placeholder="Pick associates"
             />
 
-            <div>
-                <Label label="Associates with Permission to Edit" />
+            <Input
+                type="select"
+                disabled={allRead || allWrite}
+                choices={user.associates.map((x) => x.username)}
+                label="Associates with permission to view"
+                description="Pick associates that you want to be able to view this resource"
+                value={usersRead.map((x) => x.username)}
+                onChange={(val) => {
+                    const member = user?.associates?.find(
+                        (x) => x.username === val,
+                    );
 
-                <ListAdd
-                    item="Associate"
-                    listChoices={user?.associates}
-                    listChosen={usersWrite}
-                    listProperty={"username"}
-                    listSetter={setUsersWrite}
-                    disabled={allWrite}
-                    type="datalist"
-                    messageIfNone="No associate to edit"
-                />
-            </div>
+                    if (member) {
+                        if (usersRead.map((x) => x.id).includes(member.id)) {
+                            setUsersRead((prev) =>
+                                prev.filter((x) => x.id !== member.id),
+                            );
+                        } else {
+                            setUsersRead((prev) => [...prev, member]);
+                        }
+                    }
+                }}
+                removeItem={(val) => {
+                    const member = user?.associates?.find(
+                        (x) => x.username === val,
+                    );
+                    if (member) {
+                        setUsersRead((prev) =>
+                            prev.filter((x) => x.id !== member.id),
+                        );
+                    }
+                }}
+                placeholder="Pick associates"
+            />
 
-            <div>
-                <Label label="Associates with Permission to View" />
+            <Input
+                type="select"
+                disabled={allWrite}
+                choices={availableGroups.map((x) => x.name)}
+                label="Groups with permission to edit"
+                description="Pick groups that you want to be able to edit this resource"
+                value={groupsWrite.map((x) => x.name)}
+                onChange={(val) => {
+                    const group = availableGroups.find((x) => x.name === val);
 
-                <ListAdd
-                    item="Associate"
-                    listChoices={user?.associates}
-                    listChosen={usersRead}
-                    listProperty={"username"}
-                    listSetter={setUsersRead}
-                    disabled={allRead || allWrite}
-                    type="datalist"
-                    messageIfNone="No associate to read"
-                />
-            </div>
+                    if (group) {
+                        if (groupsWrite.map((x) => x.id).includes(group.id)) {
+                            setGroupsWrite((prev) =>
+                                prev.filter((x) => x.id !== group.id),
+                            );
+                        } else {
+                            setGroupsWrite((prev) => [...prev, group]);
+                        }
+                    }
+                }}
+                removeItem={(val) => {
+                    const group = availableGroups.find((x) => x.name === val);
+                    if (group) {
+                        setGroupsWrite((prev) =>
+                            prev.filter((x) => x.id !== group.id),
+                        );
+                    }
+                }}
+                placeholder="Pick groups"
+            />
 
-            <div>
-                <Label label="Groups with Permission to Edit" />
+            <Input
+                type="select"
+                disabled={allRead || allWrite}
+                choices={availableGroups.map((x) => x.name)}
+                label="Groups with permission to view"
+                description="Pick groups that you want to be able to view this resource"
+                value={groupsRead.map((x) => x.name)}
+                onChange={(val) => {
+                    const group = availableGroups.find((x) => x.name === val);
 
-                <ListAdd
-                    item="Group"
-                    listChoices={availableGroups}
-                    listChosen={groupsWrite}
-                    listProperty={"name"}
-                    listSetter={setGroupsWrite}
-                    disabled={allWrite}
-                    type="datalist"
-                    messageIfNone="No group to edit"
-                />
-            </div>
-            <div>
-                <Label label="Groups with Permission to View" />
-
-                <ListAdd
-                    item="Group"
-                    listChoices={availableGroups}
-                    listChosen={groupsRead}
-                    listProperty={"name"}
-                    listSetter={setGroupsRead}
-                    disabled={allRead || allWrite}
-                    type="datalist"
-                    messageIfNone="No group to read"
-                />
-            </div>
+                    if (group) {
+                        if (groupsRead.map((x) => x.id).includes(group.id)) {
+                            setGroupsRead((prev) =>
+                                prev.filter((x) => x.id !== group.id),
+                            );
+                        } else {
+                            setGroupsRead((prev) => [...prev, group]);
+                        }
+                    }
+                }}
+                removeItem={(val) => {
+                    const group = availableGroups.find((x) => x.name === val);
+                    if (group) {
+                        setGroupsRead((prev) =>
+                            prev.filter((x) => x.id !== group.id),
+                        );
+                    }
+                }}
+                placeholder="Pick groups"
+            />
         </div>
     );
 }

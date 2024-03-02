@@ -1,17 +1,36 @@
-.container {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    border: 1px solid var(--accent-1-active);
-    border-top: 2px solid hsl(0, 0%, 100%);
-    animation: spin 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+.svg {
+    animation: rotate 2s linear infinite;
+    width: 24px;
+    height: 24px;
 }
 
-@keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
+.svg > circle {
+    stroke: white;
+    animation: spinner 2s ease-in-out infinite;
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    fill: none;
+    stroke-width: 6;
+    stroke-miterlimit: 10;
+    stroke-linecap: round;
+}
+
+@keyframes rotate {
+    100% {
         transform: rotate(360deg);
+    }
+}
+
+@keyframes spinner {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 130, 200;
+    }
+    100% {
+        stroke-dasharray: 130, 200;
+        stroke-dashoffset: -124px;
     }
 }

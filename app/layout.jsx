@@ -27,17 +27,17 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-    // if (connection === false) {
-    //     return (
-    //         <html lang="en">
-    //             <body>
-    //                 <Header />
-    //                 <DBConnectError />
-    //                 <Footer />
-    //             </body>
-    //         </html>
-    //     );
-    // }
+    if (connection === false) {
+        return (
+            <html lang="en">
+                <body>
+                    <Header />
+                    <DBConnectError />
+                    <Footer />
+                </body>
+            </html>
+        );
+    }
 
     const user = await useUser({ token: cookies().get("token")?.value });
     user &&
@@ -83,7 +83,7 @@ export default async function RootLayout({ children }) {
             <body>
                 <Header />
                 {children}
-                <Footer />
+                {/* {pathname !== "/me/dashboard" && <Footer />} */}
 
                 <Timer />
                 <Alerts />

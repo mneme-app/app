@@ -17,6 +17,7 @@
     --foreground-1: #020617;
     --foreground-2: #0f172a;
     --foreground-3: #1e293b;
+    --foreground-4: #475569;
 
     --accent-1: #10b981;
     --accent-1-hover: #059669;
@@ -50,7 +51,7 @@
 
     --accent-foreground: #020617;
     --anchor-foreground: #3182ce;
-    --border-color: hsl(227, 15%, 18%);
+    --border-color: #ced4da;
 
     --boxshadow-light: 0 0 4px 0 hsla(0, 0%, 0%, 0.2);
     --boxshadow-medium: 0 0 8px 0 hsla(0, 0%, 0%, 0.2);
@@ -67,6 +68,9 @@
         --foreground-1: #f8fafc;
         --foreground-2: #e2e8f0;
         --foreground-3: #cbd5e1;
+        --foreground-4: #94a3b8;
+
+        --border-color: #2a2e3b;
     }
 
     html {
@@ -83,6 +87,9 @@
     --foreground-1: #020617;
     --foreground-2: #0f172a;
     --foreground-3: #1e293b;
+    --foreground-4: #475569;
+
+    --border-color: #ced4da;
 
     html {
         color-scheme: light;
@@ -98,6 +105,9 @@
     --foreground-1: #f8fafc;
     --foreground-2: #e2e8f0;
     --foreground-3: #cbd5e1;
+    --foreground-4: #94a3b8;
+
+    --border-color: #2a2e3b;
 
     html {
         color-scheme: dark;
@@ -129,7 +139,8 @@ body {
 body {
     display: flex;
     flex-direction: column;
-    /* padding-left: calc(100dvw - 100%); */
+    padding-left: calc(100dvw - 100%);
+    --scrollbar-width: calc(100vw - 100%);
 }
 
 a {
@@ -245,6 +256,7 @@ ol {
 
 *:focus-visible {
     outline: 2px solid var(--accent-1);
+    outline-offset: 2px;
 }
 
 ::-webkit-calendar-picker-indicator:focus-visible {

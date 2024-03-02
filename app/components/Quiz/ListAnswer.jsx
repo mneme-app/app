@@ -139,9 +139,7 @@ export function ListAnswer({
                                         ? quiz.correctResponses[index]
                                         : ans
                                 }
-                                onChange={(e) =>
-                                    handleChange(index, e.target.value)
-                                }
+                                onChange={(val) => handleChange(index, val)}
                                 outlineColor={
                                     isFlashcard && showAnswer
                                         ? "var(--accent-tertiary-outline)"

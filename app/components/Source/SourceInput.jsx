@@ -1,63 +1,43 @@
 "use client";
 
+import { Input, Spinner, DeletePopup, UserInput } from "@client";
+import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 import { useStore, useModals, useAlerts } from "@/store/store";
 import { buildPermissions } from "@/lib/permissions";
-import SubmitErrors from "@/lib/SubmitErrors";
+import styles from "../Quiz/QuizInput.module.css";
 import { useState, useEffect } from "react";
+import { MIN, MAX } from "@/lib/constants";
 import { serializeOne } from "@/lib/db";
 import htmlDate from "@/lib/htmlDate";
-import { MAX } from "@/lib/constants";
-import {
-    Input,
-    Label,
-    ListItem,
-    Spinner,
-    DeletePopup,
-    PermissionsInput,
-    ListAdd,
-    UserInput,
-} from "@client";
 
 export function SourceInput({ source }) {
     const [title, setTitle] = useState("");
-    const [titleError, setTitleError] = useState("");
-
     const [medium, setMedium] = useState("article");
-    const [mediumError, setMediumError] = useState("");
-
     const [url, setUrl] = useState("");
-    const [urlError, setUrlError] = useState("");
-
     const [lastAccessed, setLastAccessed] = useState();
-    const [lastAccessedError, setLastAccessedError] = useState("");
-
     const [publishDate, setPublishDate] = useState();
-    const [publishDateError, setPublishDateError] = useState("");
-
     const [authors, setAuthors] = useState([]);
-    const [newAuthor, setNewAuthor] = useState("");
     const [courses, setCourses] = useState([]);
     const [tags, setTags] = useState([]);
-    const [newTag, setNewTag] = useState("");
+    const [locationType, setLocationType] = useState("page");
 
-    const [locationTypeDefault, setLocationTypeDefault] = useState("page");
-
-    const [loading, setLoading] = useState(false);
+    const [showAdvanced, setShowAdvanced] = useState(false);
     const [permissions, setPermissions] = useState({});
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const urlRegex = /^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(\/.*)?$/i;
     const accessedRegex = /^\d{4}-\d{2}-\d{2}$/;
     const publishRegex = /^\d{4}-\d{2}-\d{2}$/;
 
-    const user = useStore((state) => state.user);
     const availableCourses = useStore((state) => state.courses);
-    const availableTags = useStore((state) => state.tags);
-    const addTags = useStore((state) => state.addTags);
-    const canDelete = source && source.createdBy === user._id;
+    const user = useStore((state) => state.user);
 
-    const addModal = useModals((state) => state.addModal);
     const removeModal = useModals((state) => state.removeModal);
+    const addModal = useModals((state) => state.addModal);
     const addAlert = useAlerts((state) => state.addAlert);
+
+    const canDelete = source && source.createdBy === user._id;
 
     useEffect(() => {
         if (!source) {
@@ -66,79 +46,66 @@ export function SourceInput({ source }) {
         }
 
         if (source.title) setTitle(source.title);
-        if (source.authors && source.authors.length > 0)
-            setAuthors([...source.authors]);
-        if (source.tags && source.tags.length > 0) setTags([...source.tags]);
+        if (source.authors) setAuthors([...source.authors]);
+        if (source.tags) setTags([...source.tags]);
         if (source.medium) setMedium(source.medium);
         if (source.url) setUrl(source.url);
         if (source.publishedAt) setPublishDate(htmlDate(source.publishedAt));
         if (source.lastAccessed) setLastAccessed(htmlDate(source.lastAccessed));
-        if (source.courses && source.courses.length > 0) {
+        if (source.locationType) setLocationType(source.locationType);
+        if (source.courses) {
             setCourses(
                 source.courses.map((courseId) =>
                     availableCourses.find((x) => x._id === courseId),
                 ),
             );
         }
-        if (source.locationTypeDefault) {
-            setLocationTypeDefault(source.locationTypeDefault);
-        }
         if (source.permissions)
             setPermissions(serializeOne(source.permissions));
     }, []);
 
-    function handleAddAuthor(e) {
-        e.preventDefault();
-        if (!newAuthor || authors.includes(newAuthor)) return;
-        setAuthors([...authors, newAuthor]);
-        setNewAuthor("");
-    }
-
-    function handleAddTag(e) {
-        e.preventDefault();
-        if (!newTag || tags.includes(newTag)) return;
-        setTags([...tags, newTag]);
-        if (!availableTags.includes(newTag)) {
-            addTags(newTag);
-        }
-        setNewTag("");
-    }
-
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
-        const submitErrors = new SubmitErrors();
 
-        if (!title) {
-            submitErrors.addMessage("Title is required", setTitleError);
+        let valid = true;
+
+        if (title.length < MIN.title) {
+            valid = false;
+            setErrors((prev) => ({
+                ...prev,
+                title: `Title must be at least ${MIN.title} characters`,
+            }));
         } else if (title.length > MAX.title) {
-            submitErrors.addMessage(
-                `Title must be ${MAX.title} characters or fewer`,
-                setTitleError,
-            );
+            valid = false;
+            setErrors((prev) => ({
+                ...prev,
+                title: `Title must be at most ${MAX.title} characters`,
+            }));
         }
 
         if (medium === "website" && !urlRegex.test(url)) {
-            submitErrors.addMessage("Invalid URL", setUrlError);
+            valid = false;
+            setErrors((prev) => ({ ...prev, url: "Invalid URL" }));
         }
 
         if (!accessedRegex.test(lastAccessed)) {
-            submitErrors.addMessage("Invalid Date", setLastAccessedError);
+            valid = false;
+            setErrors((prev) => ({
+                ...prev,
+                lastAccessed: "Invalid Date",
+            }));
         }
 
         if (publishDate && !publishRegex.test(publishDate)) {
-            submitErrors.addMessage("Invalid Date", setPublishDateError);
+            valid = false;
+            setErrors((prev) => ({
+                ...prev,
+                publishDate: "Invalid Date",
+            }));
         }
 
-        if (submitErrors.errors.length > 0) {
-            addAlert({
-                success: false,
-                message: submitErrors.displayErrors(),
-            });
-        }
-        if (submitErrors.cannotSend) {
-            return;
-        }
+        if (!valid) return;
 
         function formatDate(htmlDate) {
             if (!htmlDate) return undefined;
@@ -155,8 +122,9 @@ export function SourceInput({ source }) {
             authors,
             courses: courses.map((course) => course._id),
             tags,
-            locationTypeDefault,
+            locationType,
         };
+
         sourcePayload.permissions = buildPermissions(permissions);
         if (source && source._id) {
             sourcePayload._id = source._id;
@@ -190,15 +158,15 @@ export function SourceInput({ source }) {
 
             setTitle("");
             setUrl("");
+            setMedium("article");
             setLastAccessed(new Date().toISOString().split("T")[0]);
             setPublishDate("");
-            setNewAuthor("");
             setAuthors([]);
-            setTitleError("");
-            setMediumError("");
-            setUrlError("");
-            setLastAccessedError("");
-            setPublishDateError("");
+            setCourses([]);
+            setTags([]);
+            setLocationType("page");
+            setPermissions({});
+            setErrors({});
         } else if (response.status === 401) {
             addAlert({
                 success: false,
@@ -225,33 +193,50 @@ export function SourceInput({ source }) {
         { value: "podcast", label: "Podcast" },
     ];
 
+    const locations = [
+        { label: "Page", value: "page" },
+        {
+            label: "ID Reference on Website",
+            value: "id reference",
+        },
+        {
+            label: "Section Header in Document",
+            value: "section",
+        },
+        {
+            label: "Timestamp",
+            value: "timestamp",
+        },
+    ];
+
     return (
-        <div className="formGrid">
+        <form className={styles.form}>
             <Input
-                label={"Title"}
+                label="Title"
                 value={title}
                 maxLength={MAX.title}
                 description="The title of the source"
                 autoComplete="off"
-                required={true}
-                error={titleError}
-                onChange={(e) => {
-                    setTitle(e.target.value);
-                    setTitleError("");
+                required
+                error={errors.title}
+                onChange={(val) => {
+                    setTitle(val);
+                    setErrors((prev) => ({ ...prev, title: "" }));
                 }}
             />
 
             <Input
-                type={"select"}
-                choices={mediumChoices}
+                required
+                readOnly
+                type="select"
+                label="Medium"
+                error={errors.medium}
                 description="The medium of the source"
-                required={true}
-                label={"Medium"}
-                value={medium}
-                error={mediumError}
-                onChange={(e) => {
-                    setMedium(e.target.value);
-                    setMediumError("");
+                choices={mediumChoices.map((x) => x.label)}
+                value={mediumChoices.find((x) => x.value === medium).label}
+                onChange={(val) => {
+                    setMedium(mediumChoices.find((x) => x.label === val).value);
+                    setErrors((prev) => ({ ...prev, medium: "" }));
                 }}
             />
 
@@ -261,154 +246,138 @@ export function SourceInput({ source }) {
                 required={medium === "website"}
                 label={"URL of Source"}
                 value={url}
-                error={urlError}
+                error={errors.url}
                 minLength={8}
-                onChange={(e) => {
-                    setUrl(e.target.value);
-                    setUrlError("");
+                onChange={(val) => {
+                    setUrl(val);
+                    setErrors((prev) => ({ ...prev, url: "" }));
                 }}
             />
 
             <Input
                 type="date"
-                label={"Publication Date"}
+                label="Publication Date"
                 value={publishDate}
                 description="The date the source was published"
-                error={publishDateError}
-                onChange={(e) => {
-                    setPublishDate(e.target.value);
-                    setPublishDateError("");
+                error={errors.publishDate}
+                onChange={(val) => {
+                    setPublishDate(val);
+                    setErrors((prev) => ({ ...prev, publishDate: "" }));
                 }}
             />
 
             <Input
                 type="date"
-                label={"Last Accessed"}
+                label="Last Accessed"
                 value={lastAccessed}
                 description="The date you last accessed the source"
-                error={lastAccessedError}
-                onChange={(e) => {
-                    setLastAccessed(e.target.value);
-                    setLastAccessedError("");
+                error={errors.lastAccessed}
+                onChange={(val) => {
+                    setLastAccessed(val);
+                    setErrors((prev) => ({ ...prev, lastAccessed: "" }));
                 }}
             />
 
-            <div>
-                <Input
-                    label={"Add Author"}
-                    value={newAuthor}
-                    maxLength={MAX.name}
-                    description="People who contributed to the source"
-                    autoComplete="off"
-                    onChange={(e) => setNewAuthor(e.target.value)}
-                    action="Add author"
-                    onActionTrigger={handleAddAuthor}
-                />
-
-                <div style={{ marginTop: "24px" }}>
-                    <Label label="Authors" />
-
-                    <ul className="chipList">
-                        {authors.length === 0 && (
-                            <ListItem item="No authors added" />
-                        )}
-
-                        {authors.map((cont) => (
-                            <ListItem
-                                key={cont}
-                                item={cont}
-                                action={() => {
-                                    setAuthors(
-                                        authors.filter((name) => cont !== name),
-                                    );
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul>
-                </div>
-            </div>
-
-            <div>
-                <Label required={false} label="Courses" />
-
-                <ListAdd
-                    item="Add to a course"
-                    listChoices={availableCourses}
-                    listChosen={courses}
-                    listProperty={"name"}
-                    listSetter={setCourses}
-                    type="datalist"
-                    messageIfNone="Not added to any course"
-                />
-            </div>
-
-            <div>
-                <Label label="Tags" />
-
-                <ul className="chipList">
-                    {tags.length === 0 && <ListItem item="No tags added" />}
-
-                    {tags.map((tag, index) => (
-                        <ListItem
-                            key={`${tag}_${index}`}
-                            item={tag}
-                            action={() => {
-                                setTags(tags.filter((t) => t !== tag));
-                            }}
-                            actionType={"delete"}
-                        />
-                    ))}
-                </ul>
-
-                <Input
-                    type="datalist"
-                    choices={availableTags}
-                    label={"Add Tag"}
-                    value={newTag}
-                    maxLength={MAX.tag}
-                    description="A word or phrase that could be used to search for this source"
-                    autoComplete="off"
-                    onChange={(e) => setNewTag(e.target.value)}
-                    action="Add tag"
-                    onActionTrigger={handleAddTag}
-                />
-            </div>
-
-            <div>
-                <Input
-                    type={"select"}
-                    label={"Location Type Default"}
-                    choices={[
-                        { label: "Page", value: "page" },
-                        {
-                            label: "ID Reference on Website",
-                            value: "id reference",
-                        },
-                        {
-                            label: "Section Header in Document",
-                            value: "section",
-                        },
-                        {
-                            label: "Timestamp",
-                            value: "timestamp",
-                        },
-                    ]}
-                    description={
-                        "When you cite this source, what would you use to identify a specific location in this source, such as a page number for a book, id tag in a webpage, or a section heading in a document?"
+            <Input
+                label="Authors"
+                choices={authors.map((author) => author.username)}
+                value={authors}
+                maxLength={MAX.name}
+                maxValues={5}
+                description="People who contributed to the source"
+                onChange={(val) => setAuthors(val)}
+                removeItem={(val) => {
+                    if (authors.length - 1 <= 100) {
+                        setErrors((prev) => ({
+                            ...prev,
+                            hints: "",
+                        }));
                     }
-                    required={false}
-                    value={locationTypeDefault}
-                    onChange={(e) => setLocationTypeDefault(e.target.value)}
-                />
-            </div>
+                    setAuthors((prev) => prev.filter((x) => x !== val));
+                }}
+            />
 
-            {(!source || source.createdBy === user._id) && (
-                <PermissionsInput
-                    permissions={source ? source.permissions : {}}
+            <Input
+                label="Add to a course"
+                choices={availableCourses.map((course) => course.name)}
+                value={courses.map((course) => course.name)}
+                description="The course this source is used in"
+                onChange={(val) => setCourses(val)}
+                removeItem={(val) => {
+                    if (courses.length - 1 <= 100) {
+                        setErrors((prev) => ({
+                            ...prev,
+                            courses: "",
+                        }));
+                    }
+                    setCourses((prev) => prev.filter((x) => x !== val));
+                }}
+            />
+
+            <Input
+                readOnly
+                type="select"
+                label="Location Type Default"
+                choices={locations.map((x) => x.label)}
+                description="When you cite this source, what would you use to identify a specific location in this source, such as a page number for a book, id tag in a webpage, or a section heading in a document?"
+                value={locations.find((x) => x.value === locationType).label}
+                onChange={(val) => setLocationType(val)}
+            />
+
+            <div className={styles.permissions}>
+                <PermissionsDisplay
+                    permissions={permissions}
+                    canEdit={!source || (user && source.createdBy === user.id)}
                     setter={setPermissions}
                 />
-            )}
+            </div>
+
+            <div className={styles.advanced}>
+                <h4
+                    tabIndex={0}
+                    onClick={() => setShowAdvanced((prev) => !prev)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            setShowAdvanced((prev) => !prev);
+                        }
+                    }}
+                >
+                    Advanced
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        style={{
+                            transform: `rotate(${showAdvanced ? 90 : 0}deg)`,
+                        }}
+                    >
+                        <path d="M9 6l6 6l-6 6" />
+                    </svg>
+                </h4>
+
+                {showAdvanced && (
+                    <Input
+                        label="Tags"
+                        maxLength={MAX.tag}
+                        description="A word or phrase that could be used to search for this note"
+                        value={tags}
+                        onChange={(val) => setTags(val)}
+                        removeItem={(val) => {
+                            if (tags.length - 1 <= 100) {
+                                setErrors((prev) => ({
+                                    ...prev,
+                                    tags: "",
+                                }));
+                            }
+                            setTags((prev) => prev.filter((x) => x !== val));
+                        }}
+                        placeholder="Tag"
+                        maxValues={100}
+                        error={""}
+                    />
+                )}
+            </div>
 
             <button onClick={handleSubmit} className="button submit">
                 {loading ? <Spinner /> : "Submit Source"}
@@ -417,6 +386,6 @@ export function SourceInput({ source }) {
             {canDelete && (
                 <DeletePopup resourceType="source" resourceId={source._id} />
             )}
-        </div>
+        </form>
     );
 }

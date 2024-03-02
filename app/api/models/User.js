@@ -48,6 +48,11 @@ const UserSchema = new Schema(
             type: [String],
             default: [],
         },
+        email: {
+            type: String,
+            minLength: MIN.email,
+            maxLength: MAX.email,
+        },
         associates: [
             {
                 type: Schema.Types.ObjectId,

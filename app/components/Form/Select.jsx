@@ -1,7 +1,5 @@
 "use client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import styles from "./Select.module.css";
 import { useEffect } from "react";
 
@@ -13,11 +11,10 @@ export function Select({
     createNew,
     disabled,
     setSelectState,
-    onBlur
 }) {
     useEffect(() => {
         const handleKeyDown = (e) => {
-            if (e.key === "Escape") {
+            if (e.key === "Escape" && setSelectState) {
                 setSelectState(false);
             }
         };
@@ -27,7 +24,7 @@ export function Select({
     }, []);
 
     const clickEvent = (choice) => {
-        if (!listChosen.find((x) => x ? x._id === choice._id : false)) {
+        if (!listChosen.find((x) => (x ? x._id === choice._id : false))) {
             listSetter([...listChosen, choice]);
         } else {
             listSetter(listChosen.filter((x) => x._id !== choice._id));
@@ -48,7 +45,7 @@ export function Select({
                 aria-orientation="vertical"
             >
                 {createNew != undefined && createNew}
-                
+
                 {listChoices &&
                     listChoices.map((choice, index) => {
                         if (!choice) return;
@@ -90,7 +87,12 @@ export function Select({
                                     className={styles.checkbox}
                                 >
                                     {isChosen && (
-                                        <FontAwesomeIcon icon={faCheck} />
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path d="M5 12l5 5l10 -10" />
+                                        </svg>
                                     )}
                                 </div>
                             </div>
@@ -100,7 +102,7 @@ export function Select({
                 {(!listChoices || listChoices.length === 0) && (
                     <div
                         aria-labelledby="emptyList"
-                        className={styles.item + " " + styles.disabled}
+                        className={styles.item + " " + styles.nothing}
                     >
                         No choices available
                     </div>

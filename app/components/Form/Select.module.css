@@ -1,40 +1,43 @@
 .picker {
     position: absolute;
-    left: 1rem;
-    width: 220px;
+    left: 0;
+    top: calc(100% + 4px);
+    width: 100%;
     border-radius: 4px;
     z-index: 1;
-    padding: 4px 0;
+    padding: 4px;
     display: flex;
     flex-direction: column;
-    max-height: 250px;
     overflow: hidden auto;
     background-color: var(--background-2);
-    border: 1px solid var(--background-3);
-    box-shadow: var(--boxshadow-dark);
+    border: 1px solid var(--border-color);
 }
 
 .picker::-webkit-scrollbar-thumb {
     border-color: var(--background-2);
 }
 
+.picker > div > button {
+    margin: 12px auto;
+    border-radius: 999px;
+}
+
 .item {
     display: flex;
     align-items: center;
     font-size: 14px;
-    line-height: 20px;
+    line-height: 22px;
     padding: 6px 12px;
     justify-content: space-between;
-    color: var(--foreground-1);
+    color: var(--foreground-3);
+    border-radius: 6px;
     cursor: pointer;
+    user-select: none;
 }
 
-.item:hover {
+.item:hover:not(.nothing) {
     background-color: var(--background-3);
-}
-
-.item:active {
-    opacity: 0.8;
+    color: var(--foreground-1);
 }
 
 .item:focus-visible {
@@ -45,6 +48,11 @@
 .item.disabled {
     cursor: default;
     opacity: 0.5;
+}
+
+.item.nothing {
+    color: var(--foreground-4);
+    cursor: default;
 }
 
 .item > span {
@@ -71,15 +79,6 @@
 }
 
 .item > .checkbox > svg {
-    width: 12px;
-    height: 12px;
-}
-
-[data-theme="light"] .picker {
-    background-color: var(--background-1);
-    border: 1px solid var(--foreground-3);
-}
-
-[data-theme="light"] .checkbox {
-    border: 1px solid var(--foreground-3);
+    width: 16px;
+    height: 16px;
 }

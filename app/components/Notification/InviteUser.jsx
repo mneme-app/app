@@ -73,7 +73,7 @@ export function InviteUser({ publicUsers, groupId }) {
                         label: x.username,
                     }))}
                     value={userId}
-                    onChange={(e) => setUserId(e.target.value)}
+                    onChange={(val) => setUserId(val)}
                 />
 
                 <p>
@@ -89,7 +89,7 @@ export function InviteUser({ publicUsers, groupId }) {
                     label="User ID"
                     description="Enter user ID of desired user"
                     value={userId}
-                    onChange={(e) => setUserId(e.target.value)}
+                    onChange={(val) => setUserId(val)}
                 />
             </div>
 

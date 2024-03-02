@@ -1,7 +1,8 @@
 "use client";
-import { useEffect, useState } from "react";
-import { Input, UserInput } from "../client";
+
 import { useAlerts, useModals } from "@/store/store";
+import { useEffect, useState } from "react";
+import { Input, UserInput } from "@client";
 import styles from "./Ballot.module.css";
 
 export function Ballot({
@@ -106,12 +107,13 @@ export function Ballot({
 
     return (
         <main className={styles.main}>
-            <h2 style={{ whiteSpace: "pre-wrap" }}>{motion}</h2>
+            <p style={{ whiteSpace: "pre-wrap" }}>{motion}</p>
+
             <section>
                 <h3>Your Choices Are:</h3>
                 <ol>
-                    {choices.map((choice, index) => (
-                        <li key={index}>{choice}</li>
+                    {choices.map((choice) => (
+                        <li key={choice}>{choice}</li>
                     ))}
                 </ol>
             </section>
@@ -120,11 +122,11 @@ export function Ballot({
                 <h3>Make Your Selections</h3>
 
                 <Input
-                    required={true}
+                    required
                     label={
                         options.numberChoices > 1 ? "First Choice" : "Choice"
                     }
-                    type="datalist"
+                    type="select"
                     choices={choices.filter(
                         (x) =>
                             x !== secondChoice &&
@@ -132,7 +134,7 @@ export function Ballot({
                             x !== voteAgainst,
                     )}
                     value={firstChoice}
-                    onChange={(e) => setFirstChoice(e.target.value)}
+                    onChange={(val) => setFirstChoice(val)}
                 />
 
                 {options.numberChoices > 1 && (
@@ -146,7 +148,7 @@ export function Ballot({
                                 x !== voteAgainst,
                         )}
                         value={secondChoice}
-                        onChange={(e) => setSecondChoice(e.target.value)}
+                        onChange={(val) => setSecondChoice(val)}
                     />
                 )}
 
@@ -161,7 +163,7 @@ export function Ballot({
                                 x !== voteAgainst,
                         )}
                         value={thirdChoice}
-                        onChange={(e) => setThirdChoice(e.target.value)}
+                        onChange={(val) => setThirdChoice(val)}
                     />
                 )}
 
@@ -176,7 +178,7 @@ export function Ballot({
                                 x !== thirdChoice,
                         )}
                         value={voteAgainst}
-                        onChange={(e) => setVoteAgainst(e.target.value)}
+                        onChange={(val) => setVoteAgainst(val)}
                     />
                 )}
 
@@ -185,7 +187,7 @@ export function Ballot({
                         label="Type the fully amended motion"
                         type="textarea"
                         value={amendment}
-                        onChange={(e) => setAmendment(e.target.value)}
+                        onChange={(val) => setAmendment(val)}
                     />
                 )}
             </section>

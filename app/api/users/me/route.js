@@ -16,6 +16,7 @@ export async function PATCH(req) {
         displayName,
         description,
         avatar,
+        email,
     } = await req.json();
 
     try {
@@ -78,7 +79,7 @@ export async function PATCH(req) {
                 return NextResponse.json(
                     {
                         success: false,
-                        message: "Username already exists",
+                        message: "This username is already taken",
                     },
                     { status: 409 },
                 );
@@ -108,10 +109,34 @@ export async function PATCH(req) {
                 await removeImageFromCDN(user.avatar);
             }
 
+            if (email) {
+                if (user.email === email) {
+                    return NextResponse.json(
+                        {
+                            success: false,
+                            message:
+                                "New email cannot be the same as the old email",
+                        },
+                        { status: 400 },
+                    );
+                }
+
+                if (await User.exists({ email })) {
+                    return NextResponse.json(
+                        {
+                            success: false,
+                            message: "User with that email already exists",
+                        },
+                        { status: 409 },
+                    );
+                }
+            }
+
             await User.findByIdAndUpdate(user.id, {
                 displayName: displayName || user.displayName,
                 description: description || user.description,
                 avatar: avatar || (avatar === "" ? null : user.avatar),
+                email: email || user.email,
             });
         }
 

@@ -30,6 +30,7 @@ export const useStore = create((set) => ({
                       displayName: user.displayName,
                       description: user.description,
                       avatar: user.avatar,
+                      email: user.email,
                       isPublic: user.isPublic,
                       createdAt: user.createdAt,
                   },

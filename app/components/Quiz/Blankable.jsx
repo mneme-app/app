@@ -137,8 +137,8 @@ export function Blankable({
                                         ? quiz.correctResponses[index]
                                         : userResponse[index]
                                 }
-                                onChange={(e) => {
-                                    handleChange(index, e.target.value);
+                                onChange={(val) => {
+                                    handleChange(index, val);
                                 }}
                                 outlineColor={
                                     responseStatus === "complete" &&

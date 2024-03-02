@@ -147,8 +147,8 @@ export function Verbatim({
                                     ? quiz.correctResponses[index]
                                     : word
                             }
-                            onChange={(e) => {
-                                handleChange(index, e.target.value);
+                            onChange={(val) => {
+                                handleChange(index, val);
                             }}
                             outlineColor={
                                 responseStatus === "complete" &&

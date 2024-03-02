@@ -217,9 +217,9 @@ export function UserInput({ isRegistering, onSubmit }) {
     return (
         <form className="formGrid">
             <Input
-                required={true}
-                onChange={(e) => {
-                    setUsername(e.target.value);
+                required
+                onChange={(val) => {
+                    setUsername(val);
                     setUsernameError("");
                 }}
                 value={username}
@@ -232,8 +232,8 @@ export function UserInput({ isRegistering, onSubmit }) {
                 <Input
                     type={"password"}
                     required={true}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
+                    onChange={(val) => {
+                        setPassword(val);
                         setPasswordError("");
                     }}
                     value={password}
@@ -284,8 +284,8 @@ export function UserInput({ isRegistering, onSubmit }) {
                 <Input
                     type={"password"}
                     required={true}
-                    onChange={(e) => {
-                        setConfirmPassword(e.target.value);
+                    onChange={(val) => {
+                        setConfirmPassword(val);
                         setConfirmPasswordError("");
                     }}
                     value={confirmPassword}

@@ -127,13 +127,13 @@ export function GroupInput({ group }) {
         <div className="formGrid">
             <Input
                 value={name}
-                required={true}
+                required
                 label={"Group Name"}
                 error={nameError}
                 minLength={1}
                 maxLength={MAX.name}
-                onChange={(e) => {
-                    setName(e.target.value);
+                onChange={(val) => {
+                    setName(val);
                     setNameError("");
                 }}
             />
@@ -144,8 +144,8 @@ export function GroupInput({ group }) {
                 error={descriptionError}
                 minLength={2}
                 maxLength={MAX.description}
-                onChange={(e) => {
-                    setDescription(e.target.value);
+                onChange={(val) => {
+                    setDescription(val);
                     setDescriptionError("");
                 }}
             />

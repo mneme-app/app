@@ -2,14 +2,16 @@
 
 import { useState, useEffect, useRef } from "react";
 import styles from "./QuizInput.module.css";
-import { Input } from "@client";
 import { MAX } from "@/lib/constants";
+import { Input } from "@client";
 
 export function BlankableInput({
     prompt,
     setPrompt,
     promptError,
     setPromptError,
+    responsesError,
+    setResponsesError,
     responses,
     setResponses,
 }) {
@@ -51,10 +53,10 @@ export function BlankableInput({
         );
     }, []);
 
-    function handleChangePrompt(e) {
-        setPromptInput(e.target.value);
+    function handleChangePrompt(val) {
+        setPromptInput(val);
         setPromptError("");
-        let promptArray = e.target.value
+        let promptArray = val
             .split(/([A-Za-z]+(?:'[A-Za-z]+)?|\W)/)
             .filter((x) => x !== undefined && x !== "")
             .map((x) => {
@@ -151,21 +153,29 @@ export function BlankableInput({
         setPrompt(promptArray.join(""));
         setPromptWords(words);
         setResponses(responseArray);
+        setResponsesError("");
     }
 
     return (
         <div>
             <Input
-                label={"Enter text that you wish to make blanks within"}
-                description={"Question prompt. Can be a question or statement"}
-                required={true}
+                type="textarea"
+                label="Enter text that you wish to make blanks within"
+                description="Question prompt. Can be a question or statement"
+                required
                 value={promptInput}
                 maxLength={MAX.prompt}
                 error={promptError}
                 onChange={handleChangePrompt}
             />
-            <div className={styles.blankBank} ref={promptBank}>
+
+            <div
+                ref={promptBank}
+                className={styles.blankBank}
+                style={{ borderColor: responsesError ? "var(--error)" : "" }}
+            >
                 <p>Click the words you would like to be blank.</p>
+
                 {promptWords.map((x, index) => {
                     if (x.punctuation) {
                         return <span key={index}>{x.punctuation}</span>;
@@ -187,6 +197,8 @@ export function BlankableInput({
                     }
                 })}
             </div>
+
+            {responsesError && <p className={styles.error}>{responsesError}</p>}
         </div>
     );
 }

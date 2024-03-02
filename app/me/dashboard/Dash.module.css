@@ -129,7 +129,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--accent-3);
+    background-color: var(--accent-1);
     border-radius: 100vw;
     font-size: 15px;
     height: 32px;
@@ -217,7 +217,7 @@
     gap: 12px;
     padding: 12px 24px 12px 16px;
     border-radius: 10px;
-    background-color: var(--accent-3);
+    background-color: var(--accent-1);
     color: var(--foreground-1);
     font-size: 15px;
     font-weight: 700;
@@ -228,11 +228,11 @@
 }
 
 .dashButton:hover {
-    background-color: var(--accent-3-hover);
+    background-color: var(--accent-1-hover);
 }
 
 .dashButton:active {
-    background-color: var(--accent-3-active);
+    background-color: var(--accent-1-active);
 }
 
 .card {
@@ -292,7 +292,7 @@
 }
 
 .input > div:focus-within {
-    outline: 2px solid var(--accent-3);
+    outline: 2px solid var(--accent-1);
 }
 
 .input > div > input {
@@ -320,7 +320,7 @@
     padding: 8px 12px;
     margin-right: 8px;
     border-radius: 4px;
-    background-color: var(--accent-3);
+    background-color: var(--accent-1);
     color: var(--foreground-1);
     font-size: 13px;
     font-weight: 500;
@@ -332,11 +332,11 @@
 
 .input > div > button:hover,
 .input > div > button:focus-visible {
-    background-color: var(--accent-3-hover);
+    background-color: var(--accent-1-hover);
 }
 
 .input > div > button:active {
-    background-color: var(--accent-3-active);
+    background-color: var(--accent-1-active);
 }
 
 .userContent {
@@ -418,29 +418,6 @@
 
 .associate > div > p {
     color: var(--foreground-3);
-}
-
-.associate > button {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: var(--background-1);
-    border: 0px;
-    cursor: pointer;
-    transition:
-        background-color 0.1s ease-in-out,
-        color 0.1s ease-in-out;
-}
-
-.associate > button:hover,
-.associate > button:focus-visible {
-    color: var(--accent-2);
 }
 
 @media screen and (max-width: 2100px) {

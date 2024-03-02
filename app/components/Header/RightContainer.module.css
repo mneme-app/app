@@ -139,4 +139,8 @@
     .profile {
         display: block;
     }
+
+    .menu > nav > ul > li {
+        font-size: 16px;
+    }
 }

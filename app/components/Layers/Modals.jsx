@@ -32,7 +32,7 @@ export function Modals() {
     );
 }
 
-export function Modal({ modal, index, length, buttonTexts }) {
+export function Modal({ modal, index, length }) {
     const [closing, setClosing] = useState(false);
     const [password, setPassword] = useState("");
 
@@ -45,7 +45,9 @@ export function Modal({ modal, index, length, buttonTexts }) {
 
     const removeModal = useModals((state) => state.removeModal);
     const closeButton = useRef(null);
+    const cancelButton = useRef(null);
     const saveButton = useRef(null);
+    const parentRef = useRef(null);
 
     useEffect(() => {
         const active = document.activeElement;
@@ -64,6 +66,13 @@ export function Modal({ modal, index, length, buttonTexts }) {
                 }
             } else if (e.key === "Escape") {
                 close();
+            } else if (e.key === "Enter") {
+                if (
+                    document.activeElement !== closeButton.current &&
+                    document.activeElement !== cancelButton.current
+                ) {
+                    onSave();
+                }
             }
         }
 
@@ -78,10 +87,55 @@ export function Modal({ modal, index, length, buttonTexts }) {
         }, 200);
     }
 
+    function onSave() {
+        if (modal.onSave) {
+            if (modal.content === "Confirm Password") {
+                modal.onSave(password);
+            } else if (modal.content === "Report a bug") {
+                if (reportDescription.length < 10) {
+                    return setDescriptionError(
+                        "Description must be at least 10 characters long.",
+                    );
+                }
+
+                modal.onSave({
+                    title: reportTitle,
+                    description: reportDescription,
+                    url: reportUrl,
+                });
+            } else {
+                modal.onSave();
+            }
+        }
+        close();
+    }
+
+    // https://stackoverflow.com/questions/57514856/
+    // how-can-i-prevent-triggering-an-on-click-event-when-the-actual-mouse-click-didn
+
+    let stopEvent = false;
+    let clickedOnChild = false;
+
     return (
         <div
+            ref={parentRef}
             className={styles.wrapper}
-            onClick={() => close()}
+            onClick={(e) => {
+                if (stopEvent) return;
+                else stopEvent = false;
+                if (e.target === parentRef.current) {
+                    close();
+                }
+                stopEvent = false;
+            }}
+            onMouseUp={() => {
+                if (clickedOnChild) {
+                    clickedOnChild = false;
+                    stopEvent = true;
+                } else {
+                    stopEvent = false;
+                }
+            }}
             style={{
                 backgroundColor: index === 0 ? "rgba(0, 0, 0, 0.5)" : "",
                 animation:
@@ -95,7 +149,15 @@ export function Modal({ modal, index, length, buttonTexts }) {
             <div
                 aria-modal="true"
                 className={styles.modal}
-                onClick={(e) => e.stopPropagation()}
+                onMouseDown={() => {
+                    clickedOnChild = true;
+                    stopEvent = true;
+                }}
+                onMouseUp={(e) => {
+                    e.stopPropagation();
+                    clickedOnChild = false;
+                    stopEvent = true;
+                }}
                 style={{
                     animationName:
                         closing || index < length - 1
@@ -131,7 +193,7 @@ export function Modal({ modal, index, length, buttonTexts }) {
                                 label="Password"
                                 type="password"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(val) => setPassword(val)}
                             />
                         </div>
                     ) : modal.content === "Report a bug" ? (
@@ -143,29 +205,34 @@ export function Modal({ modal, index, length, buttonTexts }) {
                             </p>
 
                             <Input
+                                autoFocus
                                 label="Title"
                                 value={reportTitle}
                                 maxLength={128}
-                                onChange={(e) => setReportTitle(e.target.value)}
+                                onChange={(val) => setReportTitle(val)}
+                                placeholder="Website crashes when I click on a button."
                             />
 
                             <Input
+                                big
+                                required
+                                type="textarea"
                                 label="Description"
                                 value={reportDescription}
                                 maxLength={4096}
-                                onChange={(e) => {
-                                    setReportDescription(e.target.value);
+                                onChange={(val) => {
+                                    setReportDescription(val);
                                     setDescriptionError("");
                                 }}
-                                type="textarea"
                                 error={descriptionError}
+                                placeholder="The website crashes when I click on the button."
                             />
 
                             <Input
                                 label="URL"
                                 value={reportUrl}
                                 maxLength={256}
-                                onChange={(e) => setReportUrl(e.target.value)}
+                                onChange={(val) => setReportUrl(val)}
                             />
                         </div>
                     ) : (
@@ -175,6 +242,7 @@ export function Modal({ modal, index, length, buttonTexts }) {
 
                 <footer>
                     <button
+                        ref={cancelButton}
                         className="button transparent"
                         onClick={() => close()}
                     >
@@ -186,28 +254,7 @@ export function Modal({ modal, index, length, buttonTexts }) {
                         className={`button ${
                             modal.isActionDangerous ? "red" : ""
                         }`}
-                        onClick={() => {
-                            if (modal.onSave) {
-                                if (modal.content === "Confirm Password") {
-                                    modal.onSave(password);
-                                } else if (modal.content === "Report a bug") {
-                                    if (reportDescription.length < 10) {
-                                        setDescriptionError(
-                                            "Description must be at least 10 characters long.",
-                                        );
-                                        return;
-                                    }
-                                    modal.onSave({
-                                        title: reportTitle,
-                                        description: reportDescription,
-                                        url: reportUrl,
-                                    });
-                                } else {
-                                    modal.onSave();
-                                }
-                            }
-                            close();
-                        }}
+                        onClick={() => onSave()}
                         onKeyDown={(e) => {
                             if (e.key === "Tab" && !e.shiftKey) {
                                 e.preventDefault();

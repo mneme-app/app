@@ -1,7 +1,15 @@
 .form {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 32px;
+    column-gap: 64px;
+    max-width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+    .form {
+        grid-template-columns: 1fr;
+    }
 }
 
 .form > div:first-child,
@@ -9,65 +17,63 @@
     flex-basis: 100%;
 }
 
-.courses,
-.permissions {
-    flex-basis: 50%;
-}
-
 .answer,
 .multipleChoice,
 .links,
-.advanced,
 .submit {
     flex-basis: 100%;
 }
 
-.links,
-.advanced {
+.links {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 }
 
 .advanced > h4 {
-    flex-basis: 100%;
-    text-align: center;
+    user-select: none;
+    cursor: pointer;
+    font-weight: 500;
+    border-radius: 3px;
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    gap: 4px;
 }
 
-.sources,
-.notes,
-.hints,
-.tags {
-    width: 50%;
+.advanced > h4 > svg {
+    transition: transform 0.1s ease-in-out;
+}
+
+.advanced > :nth-child(2) {
+    margin-bottom: 16px;
 }
 
 .blankBank {
     flex-basis: 100%;
     background-color: var(--background-2);
-    border: 1px solid var(--background-3);
+    border: 1px solid var(--border-color);
     color: var(--foreground-3);
     padding: 10px;
     font-size: 1.2rem;
     border-radius: 4px;
     margin-top: 4px;
+    user-select: none;
 }
 
 .blankBank > p {
     margin-bottom: 14px;
     font-size: 14px;
-    font-style: italic;
-    user-select: none;
 }
 
 .blankBank span label {
-    margin-right: 6px;
+    margin: 4px 6px 0 0;
     padding: 2px 8px;
     border-radius: 4px;
     background-color: var(--background-3);
     color: var(--foreground-3);
-    font-size: 1rem;
+    font-size: 14px;
     cursor: pointer;
-    user-select: none;
     border: none;
 }
 
@@ -76,10 +82,18 @@
 }
 
 .blankBank input:checked + label {
-    background-color: var(--accent-3-hover);
+    background-color: var(--accent-1-active);
     color: white;
 }
 
 .blankBank input[type="checkbox"] {
     display: none;
+}
+
+.error {
+    color: var(--error);
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    user-select: none;
 }

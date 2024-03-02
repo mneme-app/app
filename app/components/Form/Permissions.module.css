@@ -1,9 +1,35 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.toggles {
+    display: flex;
+    gap: 24px;
+}
+
+.toggles > * {
+    flex: 1;
+}
+
 .permissions > div {
     margin: 1rem 0;
 }
 
-.permissions h4 {
-    text-align: center;
+.permissions > h4 {
+    cursor: pointer;
+    user-select: none;
+    border-radius: 3px;
+    font-weight: 500;
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    gap: 4px;
+}
+
+.permissions > h4 > svg {
+    transition: transform 0.1s ease-in-out;
 }
 
 .permissions h5 {

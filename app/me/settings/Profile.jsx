@@ -22,9 +22,11 @@ const cdn = process.env.NEXT_PUBLIC_CDN_URL;
 export function Profile({ user }) {
     const [avatar, setAvatar] = useState(user.avatar);
     const [username, setUsername] = useState(user.username);
+    const [usernameError, setUsernameError] = useState(null);
     const [displayName, setDisplayName] = useState(user.displayName);
     const [description, setDescription] = useState(user.description);
     const [email, setEmail] = useState(user.email);
+    const [emailError, setEmailError] = useState(null);
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
@@ -99,8 +101,8 @@ export function Profile({ user }) {
                 },
             ).then((res) => res.json());
 
-            if (response.success) {
-                window.location.reload();
+            if (response.success && response.data) {
+                // setAvatar(response.data.avatar);
             } else {
                 setPassword("");
             }
@@ -109,6 +111,18 @@ export function Profile({ user }) {
                 success: response.success,
                 message: response.message,
             });
+
+            if (
+                response.message.toLowerCase().includes("email") &&
+                !response.success
+            ) {
+                setEmailError(response.message);
+            } else if (
+                response.message.toLowerCase().includes("username") &&
+                !response.success
+            ) {
+                setUsernameError(response.message);
+            }
         } catch (err) {
             console.error(err);
             setPassword("");
@@ -126,32 +140,44 @@ export function Profile({ user }) {
         setIsLoading(false);
     }
 
+    useEffect(() => {
+        setEmailError("");
+    }, [email]);
+
+    useEffect(() => {
+        setUsernameError("");
+    }, [username]);
+
     return (
         <div className={styles.content}>
             <div>
                 <Input
                     label="Username"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    error={usernameError}
+                    onChange={(val) => setUsername(val)}
                 />
 
                 <Input
                     label="Display Name"
                     value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
+                    onChange={(val) => setDisplayName(val)}
                 />
 
                 <Input
                     label="Email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    error={emailError}
+                    onChange={(val) => setEmail(val)}
+                    placeholder="example@domain.com"
                 />
 
                 <Input
-                    label="Description"
+                    big
                     type="textarea"
+                    label="Description"
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(val) => setDescription(val)}
                     placeholder="Tell us a little bit about yourself."
                 />
 
@@ -178,7 +204,7 @@ export function Profile({ user }) {
             </div>
 
             <div>
-                <div className={styles.avatar}>
+                {/* <div className={styles.avatar}>
                     <input
                         ref={avatarInput}
                         type="file"
@@ -223,7 +249,7 @@ export function Profile({ user }) {
                     />
 
                     <div>
-                        {/* {avatar ? (
+                        {avatar ? (
                             <Image
                                 src={
                                     typeof avatar === "string"
@@ -236,7 +262,7 @@ export function Profile({ user }) {
                             />
                         ) : (
                             <span>{user.username[0].toUpperCase()}</span>
-                        )} */}
+                        )}
                         <span>{user.username[0].toUpperCase()}</span>
 
                         <button onClick={() => avatarInput.current.click()}>
@@ -279,7 +305,7 @@ export function Profile({ user }) {
                             </button>
                         )}
                     </div>
-                </div>
+                </div> */}
             </div>
         </div>
     );

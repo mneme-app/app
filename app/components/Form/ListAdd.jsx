@@ -81,7 +81,10 @@ export function ListAdd({
                         listChosen.map((choice, index) => {
                             if (!choice)
                                 return (
-                                    <ListItem key={`${choice}_${index}`} item="Unavailable" />
+                                    <ListItem
+                                        key={`${choice}_${index}`}
+                                        item="Unavailable"
+                                    />
                                 );
 
                             let prop;
@@ -114,9 +117,9 @@ export function ListAdd({
                     label={item}
                     value={filter}
                     autoComplete="off"
-                    onChange={(e) => {
-                        setFilter(e.target.value);
-                        if (e.target.value.length) {
+                    onChange={(val) => {
+                        setFilter(val);
+                        if (val.length) {
                             setShowSelect(true);
                         } else {
                             setShowSelect(false);
@@ -178,7 +181,10 @@ export function ListAdd({
                 listChosen.map((choice, index) => {
                     if (!choice)
                         return (
-                            <ListItem key={`${choice}_${index}`} item="Unavailable" />
+                            <ListItem
+                                key={`${choice}_${index}`}
+                                item="Unavailable"
+                            />
                         );
 
                     let prop;

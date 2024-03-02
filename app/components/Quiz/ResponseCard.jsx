@@ -48,10 +48,9 @@ export function ResponseCard({
 
     const type = quiz.type === "prompt-response" ? "text" : "select";
 
-    function handleInput(e) {
-        e.preventDefault();
+    function handleInput(val) {
         setHasAnswered(false);
-        setUserResponse(e.target.value);
+        setUserResponse(val);
     }
 
     async function handleCheckAnswer() {
@@ -128,10 +127,8 @@ export function ResponseCard({
     } else if (hasAnswered) {
         label = correctAnswer ? "Correct" : "Incorrect";
         icon = correctAnswer ? faCheck : faXmark;
-        color = correctAnswer ? "var(--accent-3)" : "var(--accent-2)";
-        outline = correctAnswer
-            ? "var(--accent-tertiary-outline)"
-            : "var(--accent-secondary-outline)";
+        color = correctAnswer ? "var(--success)" : "var(--error)";
+        outline = correctAnswer ? "var(--success)" : "var(--error)";
     } else {
         label = "Check Answer";
     }
@@ -163,19 +160,16 @@ export function ResponseCard({
                 outlineColor={outline}
             />
 
-            {!correctAnswer &&
-                quiz.hints &&
-                quiz.hints.length > 0 &&
-                failures > 2 && (
-                    <div data-type="hints">
-                        <p>You're having some trouble. Here are some hints:</p>
-                        <ul>
-                            {quiz.hints.map((hint, index) => (
-                                <li key={`hint_${index}`}>{hint}</li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
+            {!correctAnswer && quiz.hints?.length > 0 && failures > 2 && (
+                <div data-type="hints">
+                    <p>You're having some trouble. Here are some hints:</p>
+                    <ul>
+                        {quiz.hints.map((hint) => (
+                            <li key={hint}>{hint}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </Card>
     );
 }

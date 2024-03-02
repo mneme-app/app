@@ -63,9 +63,7 @@ export function TrainSettings({ tags, courses }) {
                     min={0}
                     max={60}
                     value={minutes}
-                    onChange={(e) =>
-                        updateTime("minutes", Number(e.target.value))
-                    }
+                    onChange={(val) => updateTime("minutes", Number(val))}
                 />
                 :
                 <Input
@@ -75,9 +73,7 @@ export function TrainSettings({ tags, courses }) {
                     min={-10}
                     max={60}
                     value={seconds}
-                    onChange={(e) =>
-                        updateTime("seconds", Number(e.target.value))
-                    }
+                    onChange={(val) => updateTime("seconds", Number(val))}
                 />
             </div>
 

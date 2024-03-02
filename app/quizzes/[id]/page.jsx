@@ -12,35 +12,38 @@ import { canRead, useUser } from "@/lib/auth";
 import { serializeOne } from "@/lib/db";
 
 export default async function QuizPage({ params }) {
-    const { id } = params;
-
-    const quiz = await Quiz.findById(id);
+    const quiz = await Quiz.findById(params.id);
 
     const user = await useUser({ token: cookies().get("token")?.value });
-    if (!canRead(quiz, user)) {
-        return redirect("/quizzes");
-    }
+    if (!canRead(quiz, user)) return redirect("/quizzes");
 
     await quiz.populate("createdBy");
     await quiz.populate("contributors");
 
     return (
         <main className={styles.main}>
-            <div>
-                Created By: <UserCard user={serializeOne(quiz.createdBy)} />
-            </div>
-            <div>
-                <p>Contributors:</p>
-                <ul>
-                    {quiz.contributors.map((c) => (
-                        <li key={c._id}>{c.username}</li>
-                    ))}
-                </ul>
-            </div>
-            <QuizDisplay quiz={serializeOne(quiz)} />
-            <Card title={"Edit Quiz Question"}>
-                <QuizInput quiz={serializeOne(quiz)} />
-            </Card>
+            <section>
+                <div>
+                    Created By: <UserCard user={serializeOne(quiz.createdBy)} />
+                </div>
+
+                <div>
+                    <p>Contributors:</p>
+                    <ul>
+                        {quiz.contributors.map((c) => (
+                            <li key={c._id}>{c.username}</li>
+                        ))}
+                    </ul>
+                </div>
+            </section>
+
+            <section>
+                <QuizDisplay quiz={serializeOne(quiz)} />
+
+                <Card title={"Edit Quiz Question"}>
+                    <QuizInput quiz={serializeOne(quiz)} />
+                </Card>
+            </section>
         </main>
     );
 }

@@ -161,10 +161,8 @@ export function CourseInput({ course }) {
     return (
         <div className={styles.form}>
             <Input
-                required={true}
-                onChange={(e) => {
-                    setName(e.target.value);
-                }}
+                required
+                onChange={(val) => setName(val)}
                 value={name}
                 error={nameError}
                 label={"Name"}
@@ -173,10 +171,8 @@ export function CourseInput({ course }) {
 
             <Input
                 type="textarea"
-                required={true}
-                onChange={(e) => {
-                    setDescription(e.target.value);
-                }}
+                required
+                onChange={(val) => setDescription(val)}
                 value={description}
                 error={descriptionError}
                 label={"Description"}

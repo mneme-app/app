@@ -1,14 +1,13 @@
-import { NextResponse } from "next/server";
-// import { Quiz } from "@mneme_app/database-models";
-import { Quiz } from "@/app/api/models";
 import { useUser, canEdit, queryReadableResources } from "@/lib/auth";
-import { cookies } from "next/headers";
-import { serializeOne } from "@/lib/db";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { Types } from "mongoose";
 import { buildPermissions } from "@/lib/permissions";
-import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
+import { NextResponse } from "next/server";
+import { serializeOne } from "@/lib/db";
+import { cookies } from "next/headers";
+import { MAX } from "@/lib/constants";
+import { Types } from "mongoose";
+import { Quiz } from "@models";
 
 const allowedType = [
     "prompt-response",
@@ -164,7 +163,14 @@ export async function POST(req) {
         quiz.permissions = buildPermissions(permissions);
 
         const content = await quiz.save();
-        return NextResponse.json({ content }, { status: 201 });
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Quiz created successfully",
+                content,
+            },
+            { status: 201 },
+        );
     } catch (error) {
         console.error(`[Quiz] POST error: ${error}`);
         return server;

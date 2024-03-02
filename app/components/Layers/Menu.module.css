@@ -1,11 +1,15 @@
-.container {
-    min-width: 100%;
-    padding: 4px 0;
-    border-radius: 6px;
+.wrapper {
     position: fixed;
+    z-index: 100;
+}
+
+.container {
+    padding: 4px;
+    border-radius: 4px;
     border: 1px solid var(--border-color);
     background-color: var(--background-2);
-    z-index: 100;
+    min-width: 180px;
+    animation: popIn 0.1s ease;
 }
 
 .container.fit {
@@ -15,7 +19,7 @@
 .container > ul > hr {
     border: 0;
     border-top: 1px solid var(--border-color);
-    margin: 4px 0;
+    margin: 4px -4px;
 }
 
 .container > ul > li {
@@ -24,10 +28,13 @@
     align-items: center;
     justify-content: space-between;
     font-size: 14px;
-    line-height: 20px;
+    font-weight: 400;
+    line-height: 22px;
     padding: 6px 12px;
+    border-radius: 4px;
     user-select: none;
     cursor: pointer;
+    color: var(--foreground-3);
     transition: all 0.01s ease-in-out;
     white-space: nowrap;
 }
@@ -37,17 +44,13 @@
 }
 
 .container > ul > li.danger {
-    color: rgb(240, 33, 33);
+    color: var(--error);
 }
 
 .container > ul > li:hover,
 .container > ul > li:focus-visible {
     background-color: var(--background-3);
     outline: none;
-}
-
-.container > ul > li:active {
-    opacity: 0.8;
 }
 
 .container > ul > li > div {
@@ -60,4 +63,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }

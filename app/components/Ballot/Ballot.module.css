@@ -1,6 +1,13 @@
 .main {
-    width: 80%;
-    margin: auto;
+    width: 100%;
+    margin: 120px auto 0;
+    max-width: var(--max-width);
+}
+
+.main > p {
+    font-size: 18px;
+    line-height: 28px;
+    color: var(--foreground-3);
 }
 
 .main > section {
@@ -23,7 +30,7 @@
 
 /* .selections {
     /* display: flex; */
-    /*flex-direction: column;
+/*flex-direction: column;
     justify-content: center;
     align-items: center;
 } */

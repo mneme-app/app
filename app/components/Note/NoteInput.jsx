@@ -1,120 +1,112 @@
 "use client";
 
+import { Input, Spinner, DeletePopup, UserInput } from "@client";
 import { PermissionsDisplay } from "../Form/PermissionsDisplay";
 import { useStore, useModals, useAlerts } from "@/store/store";
-import SubmitErrors from "@/lib/SubmitErrors";
-import styles from "./NoteInput.module.css";
+import styles from "../Quiz/QuizInput.module.css";
 import { useEffect, useState } from "react";
+import { MIN, MAX } from "@/lib/constants";
 import { serializeOne } from "@/lib/db";
-import { MAX } from "@/lib/constants";
-import {
-    Label,
-    Input,
-    ListItem,
-    InputPopup,
-    Spinner,
-    DeletePopup,
-    ListAdd,
-    UserInput,
-} from "@client";
 
 export function NoteInput({ note }) {
     const [title, setTitle] = useState("");
     const [text, setText] = useState("");
     const [sources, setSources] = useState([]);
-    const [textError, setTextError] = useState("");
-    const [sourceError, setSourceError] = useState("");
-
     const [courses, setCourses] = useState([]);
     const [tags, setTags] = useState([]);
-    const [newTag, setNewTag] = useState("");
-    const [permissions, setPermissions] = useState({});
 
+    const [showAdvanced, setShowAdvanced] = useState(false);
+    const [permissions, setPermissions] = useState({});
     const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const availableSources = useStore((state) => state.sources);
     const availableCourses = useStore((state) => state.courses);
-    const availableTags = useStore((state) => state.tags);
-    const addTags = useStore((state) => state.addTags);
     const user = useStore((state) => state.user);
-    const addModal = useModals((state) => state.addModal);
+
     const removeModal = useModals((state) => state.removeModal);
+    const addModal = useModals((state) => state.addModal);
     const addAlert = useAlerts((state) => state.addAlert);
 
-    const canDelete = note && user && note.createdBy === user._id;
+    const canDelete = note && note.createdBy === user.id;
 
     useEffect(() => {
         if (!note) return;
+
         if (note.title) setTitle(note.title);
         if (note.text) setText(note.text);
-        if (note.sources && note.sources.length > 0) {
+
+        if (note.sources?.length > 0) {
             setSources(
                 note.sources.map((srcId, index) => {
-                    const source = availableSources ? availableSources.find(
+                    const source = availableSources?.find(
                         (x) => x._id === srcId,
-                    ) : undefined;
-                    if (!source)
+                    );
+
+                    if (!source) {
                         return {
-                            _id: index,
+                            id: index,
                             title: "unavailable",
                         };
+                    }
+
                     return source;
                 }),
             );
         }
+
         if (note.courses && note.courses.length > 0) {
             setCourses(
                 note.courses.map((courseId, index) => {
                     const course = availableCourses.find(
                         (x) => x._id === courseId,
                     );
-                    if (!course)
+
+                    if (!course) {
                         return {
                             id: index,
                             name: "unavailable",
                         };
+                    }
                 }),
             );
         }
-        if (note.tags && note.tags.length > 0) setTags([...note.tags]);
+
+        if (note.tags?.length > 0) setTags([...note.tags]);
         if (note.permissions) setPermissions(serializeOne(note.permissions));
     }, []);
-
-    function handleAddTag(e) {
-        e.preventDefault();
-        if (!newTag || tags.includes(newTag)) return;
-        setTags([...tags, newTag]);
-        if (!availableTags.includes(newTag)) {
-            addTags(newTag);
-        }
-        setNewTag("");
-    }
 
     async function handleSubmit(e) {
         e.preventDefault();
         if (loading) return;
-        const submitErrors = new SubmitErrors();
 
-        if (text.length === 0) {
-            submitErrors.addMessage("Text cannot be empty", setTextError);
+        let valid = true;
+
+        if (title.length < MIN.title || title.length > MAX.title) {
+            valid = false;
+            setErrors((prev) => ({
+                ...prev,
+                title: `Title must be between ${MIN.title} and ${MAX.title} characters long`,
+            }));
+        }
+
+        if (text.length < MIN.text || text.length > MAX.text) {
+            valid = false;
+            setErrors((prev) => ({
+                ...prev,
+                text: `Text must be between ${MIN.text} and ${MAX.text} characters long`,
+            }));
         }
 
         if (sources.length === 0) {
-            submitErrors.addMessage(
-                "You must add at least one source",
-                setSourceError,
-            );
+            valid = false;
+            setErrors((prev) => ({
+                ...prev,
+                sources: "Please add at least one source",
+            }));
         }
 
-        if (submitErrors.errors.length > 0) {
-            addAlert({
-                success: false,
-                message: submitErrors.displayErrors(),
-            });
-        }
-        if (submitErrors.cannotSend) {
-            return;
-        }
+        if (!valid) return;
 
         const notePayload = {
             title,
@@ -123,6 +115,7 @@ export function NoteInput({ note }) {
             courses: courses.filter((c) => c).map((course) => course._id),
             tags,
         };
+
         notePayload.permissions = permissions;
         if (note && note._id) {
             notePayload._id = note._id;
@@ -145,7 +138,12 @@ export function NoteInput({ note }) {
 
         if (response.status === 201) {
             setText("");
-            setSourceError("");
+            setTitle("");
+            setSources([]);
+            setCourses([]);
+            setTags([]);
+            setPermissions({});
+            setErrors({});
 
             addAlert({
                 success: true,
@@ -175,102 +173,145 @@ export function NoteInput({ note }) {
     }
 
     return (
-        <div className={styles.form}>
+        <form className={styles.form}>
             <Input
-                onChange={(e) => {
-                    setTitle(e.target.value);
-                }}
                 value={title}
-                label={"Title"}
+                label="Title"
+                error={errors.title}
                 maxLength={MAX.title}
+                onChange={(val) => setTitle(val)}
             />
-
-            <div className={styles.sources}>
-                <Label required={true} error={sourceError} label="Sources" />
-
-                <ListAdd
-                    item="Add a source"
-                    listChoices={availableSources}
-                    listChosen={sources}
-                    listProperty={"title"}
-                    listSetter={setSources}
-                    createNew={<InputPopup type="source" />}
-                    type="datalist"
-                    messageIfNone="No sources added"
-                />
-            </div>
-
-            <div className={styles.tags}>
-                <div>
-                    <Label label="Tags" />
-
-                    <ul className="chipList">
-                        {tags.length === 0 && <ListItem item="No tags added" />}
-
-                        {tags.map((tag) => (
-                            <ListItem
-                                key={tag}
-                                item={tag}
-                                action={() => {
-                                    setTags(tags.filter((t) => t !== tag));
-                                }}
-                                actionType={"delete"}
-                            />
-                        ))}
-                    </ul>
-                </div>
-                <Input
-                    type="datalist"
-                    choices={availableTags}
-                    label={"Add Tag"}
-                    value={newTag}
-                    maxLength={MAX.tag}
-                    description="A word or phrase that could be used to search for this note"
-                    autoComplete="off"
-                    onChange={(e) => setNewTag(e.target.value)}
-                    action="Add tag"
-                    onActionTrigger={handleAddTag}
-                />
-            </div>
 
             <Input
-                type="textarea"
-                required={true}
-                onChange={(e) => {
-                    setText(e.target.value);
-                    setTextError("");
+                required
+                type="select"
+                error={errors.sources}
+                label="Related Sources"
+                placeholder="Pick related sources"
+                value={sources.map((x) => x.title)}
+                choices={availableSources.map((x) => x.title)}
+                description="Pick sources that are related to this note"
+                onChange={(val) => {
+                    const source = availableSources.find(
+                        (x) => x.title === val,
+                    );
+
+                    if (source) {
+                        if (sources.includes(source)) {
+                            setSources((prev) =>
+                                prev.filter((x) => x !== source),
+                            );
+                        } else {
+                            setSources((prev) => [...prev, source]);
+                        }
+                    }
                 }}
-                value={text}
-                error={textError}
-                label={"Text"}
-                maxLength={MAX.noteText}
+                removeItem={(val) => {
+                    const source = availableSources.find(
+                        (x) => x.title === val,
+                    );
+                    if (source) {
+                        setSources((prev) => prev.filter((x) => x !== source));
+                    }
+                }}
             />
 
-            <div className={styles.courses}>
-                <Label required={false} label="Courses" />
+            <Input
+                big
+                required
+                label="Text"
+                value={text}
+                type="textarea"
+                onChange={(val) => {
+                    setText(val);
+                    setErrors((prev) => ({
+                        ...prev,
+                        text: "",
+                    }));
+                }}
+                error={errors.text}
+                maxLength={MAX.text}
+            />
 
-                <ListAdd
-                    item="Add to a course"
-                    listChoices={availableCourses}
-                    listChosen={courses}
-                    listProperty={"name"}
-                    listSetter={setCourses}
-                    type="datalist"
-                    messageIfNone="Not added to any course"
-                />
-            </div>
+            <Input
+                type="select"
+                label="Related Courses"
+                placeholder="Pick related courses"
+                value={courses.map((x) => x.name)}
+                choices={availableCourses.map((x) => x.name)}
+                description="Pick courses that are related to this note"
+                onChange={(val) => {
+                    const course = availableCourses.find((x) => x.name === val);
+
+                    if (course) {
+                        if (courses.includes(course)) {
+                            setCourses((prev) =>
+                                prev.filter((x) => x !== course),
+                            );
+                        } else {
+                            setCourses((prev) => [...prev, course]);
+                        }
+                    }
+                }}
+                removeItem={(val) => {
+                    const course = availableCourses.find((x) => x.name === val);
+                    if (course) {
+                        setCourses((prev) => prev.filter((x) => x !== course));
+                    }
+                }}
+            />
 
             <div className={styles.permissions}>
                 <PermissionsDisplay
                     permissions={permissions}
+                    canEdit={!note || (user && note.createdBy === user.id)}
                     setter={setPermissions}
                 />
+            </div>
 
-                {(!note || (user && note.createdBy === user._id)) && (
-                    <InputPopup
-                        type="permissions"
-                        resource={permissions}
-                        setter={setPermissions}
+            <div className={styles.advanced}>
+                <h4
+                    tabIndex={0}
+                    onClick={() => setShowAdvanced((prev) => !prev)}
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            setShowAdvanced((prev) => !prev);
+                        }
+                    }}
+                >
+                    Advanced
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        style={{
+                            transform: `rotate(${showAdvanced ? 90 : 0}deg)`,
+                        }}
+                    >
+                        <path d="M9 6l6 6l-6 6" />
+                    </svg>
+                </h4>
+
+                {showAdvanced && (
+                    <Input
+                        label="Tags"
+                        maxLength={MAX.tag}
+                        description="A word or phrase that could be used to search for this note"
+                        value={tags}
+                        onChange={(val) => setTags(val)}
+                        removeItem={(val) => {
+                            if (tags.length - 1 <= 100) {
+                                setErrors((prev) => ({
+                                    ...prev,
+                                    tags: "",
+                                }));
+                            }
+                            setTags((prev) => prev.filter((x) => x !== val));
+                        }}
+                        placeholder="Tag"
+                        maxValues={100}
+                        error={errors.tags}
                     />
                 )}
             </div>
@@ -282,6 +323,6 @@ export function NoteInput({ note }) {
             {canDelete && (
                 <DeletePopup resourceType="note" resourceId={note._id} />
             )}
-        </div>
+        </form>
     );
 }
