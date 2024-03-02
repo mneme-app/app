@@ -17,6 +17,8 @@
     color: var(--foreground-2);
     border-radius: 8px;
     margin-right: -10px;
+    position: relative;
+    z-index: 100;
 }
 
 .button:hover {
@@ -59,7 +61,7 @@
     background-color: var(--background-1);
     z-index: 100;
     display: none;
-    animation: rightToLeft 0.2s ease-in-out;
+    animation: rightToLeft 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .menu > button {
@@ -116,6 +118,16 @@
 
     100% {
         transform: translateX(0);
+    }
+}
+
+@keyframes leftToRight {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(+100%);
     }
 }
 

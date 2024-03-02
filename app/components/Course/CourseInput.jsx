@@ -93,7 +93,7 @@ export function CourseInput({ course }) {
         }
 
         const crsPayload = {
-            name,
+            name: name.trim(),
             description,
             parentCourses: parentCourses.map((course) => course._id),
             prerequisites: prerequisites.map((course) => ({

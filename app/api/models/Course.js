@@ -61,7 +61,7 @@ const CourseSchema = new Schema(
             default: "private",
             enum: {
                 values: ["open", "paid", "private"],
-                message: "Invalid enrollment type"
+                message: "Invalid enrollment type",
             },
         },
     },

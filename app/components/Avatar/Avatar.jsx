@@ -15,6 +15,7 @@ export function Avatar({ src, username, size = 40, outline, background }) {
                 height: size,
                 minHeight: size,
                 fontSize: size / 3,
+                lineHeight: `${size / 3}px`,
                 outline: outline ? "" : "0px solid transparent",
                 background: background || "",
             }}
@@ -30,7 +31,8 @@ export function Avatar({ src, username, size = 40, outline, background }) {
             ) : (
                 <div>{letter}</div>
             )} */}
-            <div>{letter}</div>
+
+            {letter}
         </div>
     );
 }

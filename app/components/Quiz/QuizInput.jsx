@@ -183,7 +183,7 @@ export function QuizInput({ quiz }) {
 
         const quizPayload = {
             type: type,
-            prompt: prompt,
+            prompt: prompt.trim(),
             choices: choices,
             correctResponses: responses,
             hints: hints,

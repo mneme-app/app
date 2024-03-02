@@ -52,6 +52,10 @@
     height: fit-content;
 }
 
+.notification.read {
+    opacity: 0.5;
+}
+
 .notification > header > h3 {
     font-size: 15px;
     font-weight: 500;
@@ -118,7 +122,8 @@
     background-color: var(--success-active);
 }
 
-.notification > button {
+.readButton,
+.removeButton {
     position: absolute;
     top: -10px;
     right: -10px;
@@ -129,6 +134,7 @@
     height: 28px;
     border-radius: 50%;
     background-color: var(--background-3);
+    color: var(--foreground-3);
     border: 0px;
     cursor: pointer;
     transition:
@@ -136,11 +142,24 @@
         color 0.1s ease-in-out;
 }
 
-.notification > button:hover,
-.notification > button:focus-visible {
+.readButton {
+    right: 24px;
+}
+
+.removeButton:hover,
+.removeButton:focus-visible {
     color: var(--error-hover);
 }
 
-.notification > button:active {
+.readButton:hover,
+.readButton:focus-visible {
+    color: var(--foreground-2);
+}
+
+.removeButton:active {
     color: var(--error-active);
+}
+
+.readButton:active {
+    color: var(--foreground-1);
 }

@@ -1,15 +1,16 @@
 "use client";
 
-import { useStore } from "@/store/store";
-import { useState } from "react";
-import styles from "@/app/me/dashboard/Dash.module.css";
 import {
     Card,
     QuizDisplay,
     UserStats,
     ListItem,
     InputPopup,
-} from "@/app/components/client";
+    Spinner,
+} from "@client";
+import styles from "@/app/me/dashboard/Dash.module.css";
+import { useAlerts, useStore } from "@/store/store";
+import { useState } from "react";
 // import { canEdit } from "@/lib/auth";
 import { CourseInput } from "@/app/components/Course/CourseInput";
 
@@ -52,7 +53,9 @@ const tabs = [
     },
 ];
 
-export function CourseDash({ course }) {
+const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
+
+export function CourseDash({ course, isLogged }) {
     const user = useStore((state) => state.user);
     const noteStore = useStore((state) => state.notes);
     const sourceStore = useStore((state) => state.sources);
@@ -61,18 +64,22 @@ export function CourseDash({ course }) {
 
     const [isLoading, setIsLoading] = useState(false);
 
+    const addAlert = useAlerts((state) => state.addAlert);
+
     const [currentTab, setCurrentTab] = useState(
         parseInt(
             typeof window != "undefined"
-                ? localStorage.getItem("currentTab") || 0
+                ? localStorage?.getItem("currentTab") || 0
                 : 0,
         ),
     );
 
-    if (!user) return null;
-
     // const isEditable = canEdit(user, course);
     const isEditable = true;
+
+    const isEnrolled = courses?.find(
+        (x) => x.id.toString() === course.id.toString(),
+    );
 
     function filter(x) {
         return x.courses.find((c) => c.toString() === course._id);
@@ -109,6 +116,158 @@ export function CourseDash({ course }) {
         };
     });
     const averageLevel = quizzes.length ? sum / quizzes.length : 0;
+
+    async function enroll() {
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(
+                `${basePath}/api/course/${course.id}/enroll`,
+                {
+                    method: "POST",
+                },
+            ).then((res) => res.json());
+
+            if (response.success) {
+                addAlert({
+                    success: true,
+                    message: response.message,
+                });
+
+                window.location.reload();
+            } else {
+                addAlert({
+                    success: false,
+                    message: response.message || "Something went wrong",
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            addAlert({
+                success: false,
+                message: "Something went wrong",
+            });
+        }
+
+        setIsLoading(false);
+    }
+
+    async function unenroll() {
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(
+                `${basePath}/api/course/${course.id}/unenroll`,
+                {
+                    method: "POST",
+                },
+            ).then((res) => res.json());
+
+            if (response.success) {
+                addAlert({
+                    success: true,
+                    message: response.message,
+                });
+
+                window.location.reload();
+            } else {
+                addAlert({
+                    success: false,
+                    message: response.message || "Something went wrong",
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            addAlert({
+                success: false,
+                message: "Something went wrong",
+            });
+        }
+
+        setIsLoading(false);
+    }
+
+    async function enrollment(action) {
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(
+                `${basePath}/api/course/${course.id}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        enrollment: action,
+                    }),
+                },
+            ).then((res) => res.json());
+
+            if (response.success) {
+                addAlert({
+                    success: true,
+                    message: response.message,
+                });
+
+                window.location.reload();
+            } else {
+                addAlert({
+                    success: false,
+                    message: response.message || "Something went wrong",
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            addAlert({
+                success: false,
+                message: "Something went wrong",
+            });
+        }
+
+        setIsLoading(false);
+    }
+
+    async function permissions(action) {
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(
+                `${basePath}/api/course/${course.id}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        permissions: action,
+                    }),
+                },
+            ).then((res) => res.json());
+
+            if (response.success) {
+                addAlert({
+                    success: true,
+                    message: response.message,
+                });
+
+                window.location.reload();
+            } else {
+                addAlert({
+                    success: false,
+                    message: response.message || "Something went wrong",
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            addAlert({
+                success: false,
+                message: "Something went wrong",
+            });
+        }
+
+        setIsLoading(false);
+    }
 
     return (
         <main className={styles.main}>
@@ -155,7 +314,8 @@ export function CourseDash({ course }) {
 
                 <div className={styles.content}>
                     <h1>{course.name}</h1>
-                    <h2>{course.description}</h2>
+                    <p>{course.description}</p>
+
                     <header>
                         <h3>
                             {tabs[currentTab].name}
@@ -167,6 +327,31 @@ export function CourseDash({ course }) {
                             >
                                 {tabs[currentTab].icon}
                             </svg>
+
+                            {currentTab === 0 && isLogged && (
+                                <button
+                                    onClick={() => {
+                                        if (isEnrolled) {
+                                            unenroll();
+                                            // addAlert({
+                                            //     success: false,
+                                            //     message: "Not yet implemented",
+                                            // });
+                                        } else {
+                                            enroll();
+                                        }
+                                    }}
+                                    className="button"
+                                >
+                                    {isLoading ? (
+                                        <Spinner />
+                                    ) : isEnrolled ? (
+                                        "Unenroll from this course"
+                                    ) : (
+                                        "Enroll in this course"
+                                    )}
+                                </button>
+                            )}
 
                             {currentTab === 1 && (
                                 <span>
@@ -196,79 +381,144 @@ export function CourseDash({ course }) {
 
                     <main className="scrollbar">
                         {currentTab === 0 && (
-                            <Card
-                                title={course.name}
-                                description={course.description}
-                            >
-                                <div className={styles.card}>
-                                    <h4>Parent Courses</h4>
-                                    {course.parentCourses &&
-                                    course.parentCourses.length ? (
-                                        <ol className="chipList">
-                                            {course.parentCourses.map(
-                                                (course) => {
-                                                    if (!course) {
-                                                        return (
-                                                            <li
-                                                                key={course._id}
-                                                            >
-                                                                Unavailable
-                                                            </li>
-                                                        );
-                                                    }
-
-                                                    return (
-                                                        <ListItem
-                                                            key={course._id}
-                                                            item={course.name}
-                                                        />
-                                                    );
-                                                },
-                                            )}
-                                        </ol>
-                                    ) : (
-                                        <p>No parent courses listed</p>
-                                    )}
-                                </div>
-
-                                <div className={styles.card}>
-                                    <h4>Prerequisite Courses</h4>
-                                    {course.prerequisites &&
-                                    course.prerequisites.length ? (
-                                        <ol className="chipList">
-                                            {course.prerequisites.map((p) => {
-                                                const crs = p.course;
-                                                if (!crs) {
-                                                    return (
-                                                        <li key={p}>
-                                                            Unavailable
-                                                        </li>
-                                                    );
+                            <div className={styles.column}>
+                                <div className={styles.actionButtons}>
+                                    {user?.id === course.createdBy && (
+                                        <button
+                                            onClick={() => {
+                                                if (
+                                                    course.enrollment === "open"
+                                                ) {
+                                                    enrollment("private");
+                                                } else {
+                                                    enrollment("open");
                                                 }
+                                            }}
+                                            className="button"
+                                        >
+                                            {isLoading ? (
+                                                <Spinner />
+                                            ) : course.enrollment === "open" ? (
+                                                "Close enrollment"
+                                            ) : (
+                                                "Open enrollment"
+                                            )}
+                                        </button>
+                                    )}
 
-                                                const display = `${crs.name} - Average Level Required: ${p.averageLevelRequired}`;
-
-                                                return (
-                                                    <ListItem
-                                                        key={p.course._id}
-                                                        item={display}
-                                                    />
-                                                );
-                                            })}
-                                        </ol>
-                                    ) : (
-                                        <p>No prerequisite courses listed</p>
+                                    {user?.id === course.createdBy && (
+                                        <button
+                                            onClick={() => {
+                                                if (
+                                                    course.permissions.allRead
+                                                ) {
+                                                    permissions({
+                                                        allRead: false,
+                                                    });
+                                                } else {
+                                                    permissions({
+                                                        allRead: true,
+                                                    });
+                                                }
+                                            }}
+                                            className="button"
+                                        >
+                                            {isLoading ? (
+                                                <Spinner />
+                                            ) : course.permissions.allRead ? (
+                                                "Make private"
+                                            ) : (
+                                                "Make public"
+                                            )}
+                                        </button>
                                     )}
                                 </div>
 
-                                {isEditable && (
-                                    <InputPopup
-                                        resource={course}
-                                        type={"course"}
-                                    />
-                                )}
-                            </Card>
+                                <Card
+                                    title={course.name}
+                                    description={course.description}
+                                >
+                                    <div className={styles.card}>
+                                        <h4>Parent Courses</h4>
+                                        {course.parentCourses &&
+                                        course.parentCourses.length ? (
+                                            <ol className="chipList">
+                                                {course.parentCourses.map(
+                                                    (course) => {
+                                                        if (!course) {
+                                                            return (
+                                                                <li
+                                                                    key={
+                                                                        course._id
+                                                                    }
+                                                                >
+                                                                    Unavailable
+                                                                </li>
+                                                            );
+                                                        }
+
+                                                        return (
+                                                            <ListItem
+                                                                key={course._id}
+                                                                item={
+                                                                    course.name
+                                                                }
+                                                            />
+                                                        );
+                                                    },
+                                                )}
+                                            </ol>
+                                        ) : (
+                                            <p>No parent courses listed</p>
+                                        )}
+                                    </div>
+
+                                    <div className={styles.card}>
+                                        <h4>Prerequisite Courses</h4>
+                                        {course.prerequisites &&
+                                        course.prerequisites.length ? (
+                                            <ol className="chipList">
+                                                {course.prerequisites.map(
+                                                    (p) => {
+                                                        const crs = p.course;
+                                                        if (!crs) {
+                                                            return (
+                                                                <li key={p}>
+                                                                    Unavailable
+                                                                </li>
+                                                            );
+                                                        }
+
+                                                        const display = `${crs.name} - Average Level Required: ${p.averageLevelRequired}`;
+
+                                                        return (
+                                                            <ListItem
+                                                                key={
+                                                                    p.course._id
+                                                                }
+                                                                item={display}
+                                                            />
+                                                        );
+                                                    },
+                                                )}
+                                            </ol>
+                                        ) : (
+                                            <p>
+                                                No prerequisite courses listed
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    {isEditable && (
+                                        <InputPopup
+                                            resource={course}
+                                            type={"course"}
+                                        />
+                                    )}
+                                </Card>
+                            </div>
                         )}
+
                         <ul>
                             {currentTab === 1 &&
                                 quizzes.map((quiz) => {

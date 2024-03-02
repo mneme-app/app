@@ -1,0 +1,17 @@
+.main h2 {
+    margin: 1rem;
+    margin-bottom: 2rem;
+}
+
+.main > section:first-of-type {
+    margin-top: 5rem;
+}
+
+.main > section > ol > li {
+    border: 3px solid blue;
+    padding: 0.5rem;
+    padding-top: 2rem;
+    margin: 0.5rem 0.5rem 20rem 0.5rem;
+    border-radius: 20px;
+    white-space: pre-wrap;
+}

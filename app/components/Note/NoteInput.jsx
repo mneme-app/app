@@ -109,8 +109,8 @@ export function NoteInput({ note }) {
         if (!valid) return;
 
         const notePayload = {
-            title,
-            text,
+            title: title.trim(),
+            text: text.trim(),
             sources: sources.filter((s) => s).map((src) => src._id),
             courses: courses.filter((c) => c).map((course) => course._id),
             tags,

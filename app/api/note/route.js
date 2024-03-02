@@ -86,8 +86,8 @@ export async function POST(req) {
 
         const note = new Note({
             createdBy: user._id,
-            title,
-            text,
+            title: title.trim(),
+            text: text.trim(),
             sources: [...sources],
             courses: courses ?? [],
             tags: [...tags],
@@ -134,10 +134,10 @@ export async function PUT(req) {
         }
 
         if (title) {
-            note.title = title;
+            note.title = title.trim();
         }
         if (text) {
-            note.text = text;
+            note.text = text.trim();
         }
         if (sources) {
             sources.forEach((sourceId_req) => {

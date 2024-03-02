@@ -9,49 +9,46 @@ export async function NoteDisplay({ note }) {
         .populate("courses");
 
     return (
-        <Card title={note.title} description={`${note.text}`}>
-            <div className={styles.tags}>
-                <h5>Tags</h5>
-                {note.tags?.length > 0 ? (
+        <Card title={note.title} description={note.text}>
+            {note.tags?.length > 0 && (
+                <section className={styles.section}>
+                    <h5>Tags</h5>
+
                     <ol className="chipList">
                         {note.tags?.map((cont) => (
                             <ListItem key={cont} item={cont} />
                         ))}
                     </ol>
-                ) : (
-                    <p>No tags for note</p>
-                )}
-            </div>
+                </section>
+            )}
 
-            <div className={styles.sources}>
-                <h5>Sources linked</h5>
-                <ul>
-                    {dbNote.sources.map((source) => {
-                        return (
+            {dbNote?.sources?.length > 0 && (
+                <section className={styles.section}>
+                    <h5>Sources linked</h5>
+
+                    <ul>
+                        {dbNote.sources.map((source) => (
                             <ListItem
                                 key={source._id}
                                 item={source.title}
                                 link={source.url}
                             />
-                        );
-                    })}
-                </ul>
-            </div>
-
-            <div className={styles.tags}>
-                <h5>This note belongs to the following courses</h5>
-                {dbNote.courses && dbNote.courses.length > 0 ? (
-                    <ul>
-                        {dbNote.courses.map((course) => {
-                            return (
-                                <ListItem key={course._id} item={course.name} />
-                            );
-                        })}
+                        ))}
                     </ul>
-                ) : (
-                    <p>No Courses Listed</p>
-                )}
-            </div>
+                </section>
+            )}
+
+            {dbNote?.courses?.length > 0 && (
+                <section className={styles.section}>
+                    <h5>This note belongs to the following courses</h5>
+
+                    <ul>
+                        {dbNote.courses.map((course) => (
+                            <ListItem key={course._id} item={course.name} />
+                        ))}
+                    </ul>
+                </section>
+            )}
 
             <p>Created by: {user?.username ?? "Unknown"}</p>
         </Card>

@@ -115,7 +115,9 @@ export const useStore = create((set) => ({
     },
 
     addNotification: (notification) => {
-        return set(() => ({ notifications: [...notifications, notification] }));
+        return set((state) => ({
+            notifications: [...state.notifications, notification],
+        }));
     },
 
     removeNotification: (id) => {
@@ -125,6 +127,54 @@ export const useStore = create((set) => ({
             ),
         }));
     },
+
+    readNotification: (id) => {
+        return set((state) => ({
+            notifications: state.notifications.map((notification) => {
+                if (notification._id === id) {
+                    notification.read = true;
+                }
+                return notification;
+            }),
+        }));
+    },
+
+    readAll: () => {
+        return set((state) => ({
+            notifications: state.notifications.map((notification) => {
+                notification.read = true;
+                return notification;
+            }),
+        }));
+    },
+}));
+
+// Ballots Store
+
+export const useBallots = create()((set) => ({
+    ballots: [],
+
+    addBallot: (ballot) => {
+        return set((state) => ({
+            ballots: [...state.ballots, ballot],
+        }));
+    },
+
+    editBallot: (ballot) => {
+        return set((state) => {
+            const ballots = [...state.ballots];
+            const oldBallotIndex = ballots.findIndex(
+                (b) => b.motion === ballot.motion,
+            );
+            ballots.splice(oldBallotIndex, 1, ballot);
+
+            return {
+                ballots,
+            };
+        });
+    },
+
+    addAllBallots: (ballots) => set(() => ({ ballots })),
 }));
 
 // Daily Train Store

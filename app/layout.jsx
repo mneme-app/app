@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import connectDB from "./api/db";
 import "./globals.css";
+import { queryReadableResources } from "@/lib/auth";
 
 const connection = await connectDB();
 
@@ -46,22 +47,28 @@ export default async function RootLayout({ children }) {
             "id username avatar displayName description",
         ));
     user && (await user.populate("groups"));
+    user && (await user.populate("courses.course"));
 
     const notifications = user
         ? serialize(await Notification.find({ recipient: user.id }))
         : [];
 
+    const query = queryReadableResources(user);
+
     const sources = user
-        ? serialize(await Source.find({ createdBy: user.id }))
+        ? serialize(await Source.find(query))
         : [];
     const notes = user
-        ? serialize(await Note.find({ createdBy: user.id }))
+        ? serialize(await Note.find(query))
         : [];
     const quizzes = user
-        ? serialize(await Quiz.find({ createdBy: user.id }))
+        ? serialize(await Quiz.find(query))
         : [];
     const courses = user
-        ? serialize(await Course.find({ createdBy: user.id }))
+        ? [
+              ...serialize(await Course.find({ createdBy: user.id })),
+              ...serialize(user.courses.map((course) => course.course)),
+          ]
         : [];
 
     return (
@@ -76,7 +83,7 @@ export default async function RootLayout({ children }) {
                     groups={serialize(user.groups)}
                     associates={serialize(user.associates)}
                     notifications={notifications}
-                    webSocketURL={process.env.WS_URL}
+                    // webSocketURL={process.env.WS_URL}
                 />
             )}
 

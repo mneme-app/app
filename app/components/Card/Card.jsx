@@ -86,11 +86,41 @@ export function Card({
                         <div className={styles.buttonContainer}>
                             {buttons.map((button) => {
                                 if (button.link) {
+                                    if (button.link.startsWith("http")) {
+                                        return (
+                                            <a
+                                                key={button.label}
+                                                href={button.link}
+                                                target={
+                                                    button.sameTab
+                                                        ? ""
+                                                        : "_blank"
+                                                }
+                                                rel="noreferrer"
+                                                className={`button ${button.color}`}
+                                                style={{
+                                                    backgroundColor:
+                                                        button.color,
+                                                }}
+                                            >
+                                                {button.label}
+
+                                                {button.icon && (
+                                                    <FontAwesomeIcon
+                                                        icon={button.icon}
+                                                    />
+                                                )}
+                                            </a>
+                                        );
+                                    }
+
                                     return (
-                                        <a
+                                        <Link
                                             key={button.label}
                                             href={button.link}
-                                            target="_blank"
+                                            target={
+                                                button.sameTab ? "" : "_blank"
+                                            }
                                             rel="noreferrer"
                                             className={`button ${button.color}`}
                                             style={{
@@ -104,7 +134,7 @@ export function Card({
                                                     icon={button.icon}
                                                 />
                                             )}
-                                        </a>
+                                        </Link>
                                     );
                                 } else {
                                     return (

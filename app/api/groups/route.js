@@ -49,7 +49,7 @@ export async function POST(req) {
         }
 
         const group = new Group({
-            name: name,
+            name: name.trim(),
             description: description.length > 0 ? description : null,
             icon: icon,
             owner: user.id,

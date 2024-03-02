@@ -95,7 +95,7 @@ export async function POST(req) {
         }
 
         const source = new Source({
-            title: title,
+            title: title.trim(),
             medium: medium,
             url: url,
             publishedAt: publishDate,
@@ -167,7 +167,7 @@ export async function PUT(req) {
         }
 
         if (title) {
-            source.title = title;
+            source.title = title.trim();
         }
         if (medium) {
             source.medium = medium;

@@ -1,17 +1,6 @@
 .main {
-    width: 100%;
-    margin: 120px auto 0;
-    max-width: var(--max-width);
-}
-
-.main > p {
-    font-size: 18px;
-    line-height: 28px;
-    color: var(--foreground-3);
-}
-
-.main > section {
-    margin: 5rem 0;
+    width: 95%;
+    margin: auto;
 }
 
 .main ol {
@@ -22,6 +11,10 @@
 
 .main ol > li {
     margin: 0.5rem;
+}
+
+.main h3 {
+    font-weight: normal;
 }
 
 .inputs > * {
@@ -56,9 +49,12 @@
     text-align: center;
 }
 
+.selections table td {
+    white-space: pre-wrap;
+}
+
 .selections > button {
     margin-top: 30px;
-    width: 300px;
 }
 
 .selections td {

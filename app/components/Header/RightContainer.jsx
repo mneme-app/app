@@ -9,26 +9,34 @@ import Link from "next/link";
 
 export function RightContainer({ user }) {
     const [open, setOpen] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
     const pathname = usePathname();
 
-    useEffect(() => {
-        if (open) {
-            setTimeout(() => {
-                document.documentElement.style.overflow = "hidden";
-            }, 300);
-        } else {
-            document.documentElement.style.overflow = "auto";
-        }
-    }, [open]);
+    function handleClose() {
+        setIsClosing(true);
+        document.documentElement.style.overflow = "auto";
 
-    useEffect(() => {
-        setOpen(false);
-    }, [pathname]);
+        setTimeout(() => {
+            setOpen(false);
+            setIsClosing(false);
+        }, 200);
+    }
+
+    function handleOpen() {
+        setOpen(true);
+        setTimeout(() => {
+            document.documentElement.style.overflow = "hidden";
+        }, 200);
+    }
+
+    // useEffect(() => {
+    //     handleClose();
+    // }, [pathname]);
 
     useEffect(() => {
         function handleResize() {
             if (window.innerWidth > 767) {
-                setOpen(false);
+                handleClose();
             }
         }
 
@@ -45,8 +53,20 @@ export function RightContainer({ user }) {
             )}
 
             {open && (
-                <div className={styles.menu}>
-                    <button onClick={() => setOpen(!open)}>
+                <div
+                    className={styles.menu}
+                    style={{
+                        animation: isClosing
+                            ? `${styles.leftToRight} 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)`
+                            : "",
+                    }}
+                >
+                    {/* <button
+                        onClick={() => {
+                            if (open) return handleClose();
+                            handleOpen();
+                        }}
+                    >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -56,14 +76,14 @@ export function RightContainer({ user }) {
                             <path d="M18 6l-12 12" />
                             <path d="M6 6l12 12" />
                         </svg>
-                    </button>
+                    </button> */}
 
                     <nav>
                         <ul>
                             {links.map((link) => (
                                 <li
                                     key={link.name}
-                                    onClick={() => setOpen(false)}
+                                    onClick={() => handleClose()}
                                 >
                                     <Link href={link.href}>{link.name}</Link>
                                 </li>
@@ -73,7 +93,13 @@ export function RightContainer({ user }) {
                 </div>
             )}
 
-            <button onClick={() => setOpen(!open)} className={styles.button}>
+            <button
+                className={styles.button}
+                onClick={() => {
+                    if (open) return handleClose();
+                    handleOpen();
+                }}
+            >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

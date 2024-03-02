@@ -1,6 +1,6 @@
 "use client";
 
-import { useMenu, useModals, useStore } from "@/store/store";
+import { useAlerts, useMenu, useModals, useStore } from "@/store/store";
 import { usePathname, useRouter } from "next/navigation";
 import { protectedPaths } from "@/app/data/paths";
 import styles from "./Profile.module.css";
@@ -11,6 +11,8 @@ const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 export function Profile({ user, size = 44 }) {
     const notifications = useStore((state) => state.notifications);
     const addModal = useModals((state) => state.addModal);
+    const addAlert = useAlerts((state) => state.addAlert);
+    const readAll = useStore((state) => state.readAll);
     const setMenu = useMenu((state) => state.setMenu);
     const menu = useMenu((state) => state.menu);
 
@@ -175,7 +177,23 @@ export function Profile({ user, size = 44 }) {
                     },
                     {
                         name: "Mark all as read",
-                        onClick: () => console.log("read"),
+                        onClick: async () => {
+                            const response = await fetch(
+                                `${basePath}/api/notifications`,
+                                {
+                                    method: "PATCH",
+                                },
+                            ).then((res) => res.json());
+
+                            addAlert({
+                                success: response.success,
+                                message: response.message,
+                            });
+
+                            if (response.success) {
+                                readAll();
+                            }
+                        },
                     },
                 ],
                 bottom: true,

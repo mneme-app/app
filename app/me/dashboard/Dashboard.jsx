@@ -6,55 +6,6 @@ import styles from "./Dash.module.css";
 import { useState } from "react";
 import Link from "next/link";
 
-const tabs = [
-    {
-        name: "User",
-        icon: (
-            <g>
-                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-            </g>
-        ),
-    },
-    {
-        name: "Courses",
-        icon: (
-            <g>
-                <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
-                <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
-                <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
-                <path d="M6 9l12 0" />
-                <path d="M6 12l3 0" />
-                <path d="M6 15l2 0" />
-            </g>
-        ),
-    },
-    {
-        name: "Groups",
-        icon: (
-            <g>
-                <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
-                <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                <path d="M17 10h2a2 2 0 0 1 2 2v1" />
-                <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
-            </g>
-        ),
-    },
-    {
-        name: "Associates",
-        icon: (
-            <g>
-                <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
-                <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
-            </g>
-        ),
-    },
-];
-
 const basePath = process.env.NEXT_PUBLIC_BASEPATH ?? "";
 
 export function Dashboard({ more = false }) {
@@ -77,6 +28,103 @@ export function Dashboard({ more = false }) {
     const [currentTab, setCurrentTab] = useState(
         parseInt(localStorage ? localStorage.getItem("currentTab") || 0 : 0),
     );
+
+    const tabs = [
+        {
+            name: "User",
+            icon: (
+                <g>
+                    <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                </g>
+            ),
+            summaries: [
+                {
+                    name: "Sources",
+                    data: sources.length,
+                },
+                {
+                    name: "Quizzes",
+                    data: quizzes.length,
+                },
+                {
+                    name: "Notes",
+                    data: notes.length,
+                },
+                {
+                    name: "Associates",
+                    data: associates.length,
+                },
+                {
+                    name: "Groups",
+                    data: groups.length,
+                },
+            ],
+        },
+        {
+            name: "Courses",
+            icon: (
+                <g>
+                    <path d="M15 15m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                    <path d="M13 17.5v4.5l2 -1.5l2 1.5v-4.5" />
+                    <path d="M10 19h-5a2 2 0 0 1 -2 -2v-10c0 -1.1 .9 -2 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -1 1.73" />
+                    <path d="M6 9l12 0" />
+                    <path d="M6 12l3 0" />
+                    <path d="M6 15l2 0" />
+                </g>
+            ),
+            summaries: [
+                {
+                    name: "Enrolled",
+                    data: courses.length,
+                },
+                {
+                    name: "Completed",
+                    data: "What does it mean to be complete?",
+                },
+            ],
+        },
+        {
+            name: "Groups",
+            icon: (
+                <g>
+                    <path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                    <path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" />
+                    <path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                    <path d="M17 10h2a2 2 0 0 1 2 2v1" />
+                    <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                    <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
+                </g>
+            ),
+            summaries: [
+                {
+                    name: "Created",
+                    data: groupsCreated.length,
+                },
+                {
+                    name: "Joined",
+                    data: groupsJoined.length,
+                },
+            ],
+        },
+        {
+            name: "Associates",
+            icon: (
+                <g>
+                    <path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0" />
+                    <path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
+                </g>
+            ),
+            summaries: [
+                {
+                    name: "Associates",
+                    data: associates.length,
+                },
+            ],
+        },
+    ];
 
     async function requestAssociate() {
         if (isLoading || associate.length === 0) return;
@@ -141,8 +189,6 @@ export function Dashboard({ more = false }) {
                                         {tab.icon}
                                     </svg>
                                 </div>
-
-                                <span>{tab.name}</span>
                             </li>
                         ))}
                     </ul>
@@ -163,8 +209,9 @@ export function Dashboard({ more = false }) {
                                 ? user.username
                                 : tabs[currentTab].name}
 
-                            {currentTab === 0 && <span>XP 2783</span>}
-                            {currentTab === 0 && <span>V</span>}
+                            {currentTab === 0 && (
+                                <span>XP {user.xp ? user.xp : 0}</span>
+                            )}
 
                             {currentTab !== 0 && (
                                 <Link
@@ -188,74 +235,73 @@ export function Dashboard({ more = false }) {
                             )}
                         </h1>
 
-                        <div className={styles.chips}>
-                            {currentTab === 0 ? (
-                                <>
-                                    <div>
-                                        <p>Sources</p>
-                                        <p>{sources.length}</p>
-                                    </div>
-
-                                    <div>
-                                        <p>Quizzes</p>
-                                        <p>{quizzes.length}</p>
-                                    </div>
-
-                                    <div>
-                                        <p>Notes</p>
-                                        <p>{notes.length}</p>
-                                    </div>
-
-                                    <div>
-                                        <p>Associates</p>
-                                        <p>{associates.length}</p>
-                                    </div>
-
-                                    <div>
-                                        <p>Groups</p>
-                                        <p>{groups.length}</p>
-                                    </div>
-                                </>
-                            ) : currentTab === 1 ? (
-                                <>
-                                    <div>
-                                        <p>Enrolled</p>
-                                        <p>{courses.length}</p>
-                                    </div>
-
-                                    <div>
-                                        <p>Completed</p>
-                                        <p>{courses.length}</p>
-                                    </div>
-                                </>
-                            ) : currentTab === 2 ? (
-                                <>
-                                    <div>
-                                        <p>Created</p>
-                                        <p>{groupsCreated.length}</p>
-                                    </div>
-
-                                    <div>
-                                        <p>Joined</p>
-                                        <p>{groupsJoined.length}</p>
-                                    </div>
-                                </>
-                            ) : (
-                                <div>
-                                    <p> Associates </p>
-                                    <p>{associates.length}</p>
+                        <div className={styles.summaries}>
+                            {tabs[currentTab].summaries.map((sum) => (
+                                <div key={sum.name}>
+                                    <p>{sum.name}</p>
+                                    <p>{sum.data}</p>
                                 </div>
-                            )}
+                            ))}
                         </div>
                     </header>
 
                     <main className="scrollbar">
+                        <header>
+                            <h1>
+                                {currentTab === 0 && (
+                                    <Avatar
+                                        src={user.avatar}
+                                        username={user.username}
+                                        size={42}
+                                    />
+                                )}
+
+                                {currentTab === 0
+                                    ? user.username
+                                    : tabs[currentTab].name}
+
+                                {currentTab === 0 && (
+                                    <span>XP {user.xp ? user.xp : 0}</span>
+                                )}
+
+                                {currentTab !== 0 && (
+                                    <Link
+                                        className={styles.browseLink}
+                                        title={`Browse ${tabs[currentTab].name}`}
+                                        href={`/${tabs[
+                                            currentTab
+                                        ].name.toLowerCase()}`}
+                                    >
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24"
+                                            width="20"
+                                            height="20"
+                                        >
+                                            <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
+                                            <path d="M11 13l9 -9" />
+                                            <path d="M15 4h5v5" />
+                                        </svg>
+                                    </Link>
+                                )}
+                            </h1>
+
+                            <div className={styles.summaries}>
+                                {tabs[currentTab].summaries.map((sum) => (
+                                    <div key={sum.name}>
+                                        <p>{sum.name}</p>
+                                        <p>{sum.data}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </header>
+
                         {currentTab === 0 && (
                             <div className={styles.userContent}>
                                 <Notifications />
 
                                 <div>
-                                    <h3>Pickup where you left</h3>
+                                    <h3>Pick up where you left off</h3>
 
                                     <ul className={styles.gridList}>
                                         {Array(5)
@@ -409,12 +455,13 @@ export function Dashboard({ more = false }) {
                                     <p>You haven't added any associates yet.</p>
 
                                     <div className={styles.input}>
-                                        <label htmlFor="">
+                                        <label htmlFor="addAssociate">
                                             Add Associate by Username or ID
                                         </label>
 
                                         <div>
                                             <input
+                                                id="addAssociate"
                                                 type="text"
                                                 placeholder="Username or ID"
                                                 value={associate}
@@ -445,12 +492,13 @@ export function Dashboard({ more = false }) {
                             ) : (
                                 <>
                                     <div className={styles.input}>
-                                        <label htmlFor="">
+                                        <label htmlFor="addAssociate">
                                             Add Associate by Username or ID
                                         </label>
 
                                         <div>
                                             <input
+                                                id="addAssociate"
                                                 type="text"
                                                 placeholder="Username or ID"
                                                 value={associate}

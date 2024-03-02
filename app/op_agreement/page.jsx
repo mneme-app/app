@@ -1,18 +1,18 @@
-import styles from "./ballot.module.css";
+import styles from "../ballot/ballot.module.css";
 import { Ballot } from "../components/Ballot/Ballot";
 import BallotModel from "../api/models/Ballot";
 import { useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { serializeOne } from "@/lib/db";
-import questionnaire from "./questionnaire";
-import { BallotProgress } from "./ballotProgress";
+import { BallotProgress } from "../ballot/ballotProgress";
+import decisions from "./decisions";
 
-export default async function BallotPage() {
+export default async function OpAgreementPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
     const motions = [];
     const votes = [];
 
-    const questionsPromises = questionnaire.map(async (point) => {
+    const questionsPromises = decisions.map(async (point) => {
         const ballotsPromises = point.questions.map(async (q) => {
             const ballot = user
                 ? await BallotModel.findOne({

@@ -1,16 +1,13 @@
-import { NextResponse } from "next/server";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
 import { User, Group, Notification } from "@/app/api/models";
-import { useUser } from "@/lib/auth";
+import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { useUser } from "@/lib/auth";
 
 export async function POST(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
-
-        if (!user) {
-            return unauthorized;
-        }
+        if (!user) return unauthorized;
 
         const { action, recipientId, groupId } = await req.json();
         let recipient = await User.findById(recipientId);
@@ -93,6 +90,33 @@ export async function POST(req) {
         );
     } catch (error) {
         console.error(`POST error for notifications`, error);
+        return server;
+    }
+}
+
+export async function PATCH(req) {
+    try {
+        const user = await useUser({ token: cookies().get("token")?.value });
+        if (!user) return unauthorized;
+
+        // Read all notifications
+
+        const res = await Notification.updateMany(
+            { recipient: user._id },
+            { $set: { read: true } },
+        );
+
+        return new NextResponse(
+            {
+                success: res.nModified > 0,
+                message: `Read ${res.nModified ?? "no"} notifications`,
+            },
+            {
+                status: 200,
+            },
+        );
+    } catch (error) {
+        console.error(`PATCH error for notifications`, error);
         return server;
     }
 }

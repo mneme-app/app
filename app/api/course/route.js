@@ -78,7 +78,7 @@ export async function POST(req) {
         }
 
         const course = new Course({
-            name,
+            name: name.trim(),
             description,
             parentCourses,
             prerequisites,
@@ -229,7 +229,7 @@ export async function PUT(req) {
         const promises = [];
 
         if (name) {
-            course.name = name;
+            course.name = name.trim();
         }
         if (description) {
             course.description = description;

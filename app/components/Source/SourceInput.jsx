@@ -114,7 +114,7 @@ export function SourceInput({ source }) {
         }
 
         const sourcePayload = {
-            title,
+            title: title.trim(),
             medium,
             url,
             publishDate: formatDate(publishDate),

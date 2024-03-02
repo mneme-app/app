@@ -1,5 +1,5 @@
 import { CourseInput } from "../components/Course/CourseInput";
-import { canEdit, useUser } from "@/lib/auth";
+import { canEdit, canRead, useUser } from "@/lib/auth";
 import { cookies } from "next/headers";
 import styles from "@/app/page.module.css";
 import Course from "../api/models/Course";
@@ -20,7 +20,11 @@ export default async function CoursesPage({ searchParams }) {
                     <ol className={styles.listGrid}>
                         {courses.map((course) => (
                             <li key={course._id}>
-                                <CourseDisplay course={course} />
+                                <CourseDisplay
+                                    course={course}
+                                    canRead={canRead(course, user)}
+                                />
+
                                 {user && canEdit(course, user) && (
                                     <InputPopup
                                         type="course"

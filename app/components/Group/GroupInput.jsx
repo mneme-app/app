@@ -75,7 +75,7 @@ export function GroupInput({ group }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name: name,
+                    name: name.trim(),
                     description: description,
                     icon: icon,
                 }),

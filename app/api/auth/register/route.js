@@ -40,7 +40,7 @@ export async function POST(req) {
     }
 
     try {
-        const sameUser = await User.findOne({ username });
+        const sameUser = await User.findOne({ username: username.trim() });
 
         if (sameUser) {
             return NextResponse.json(

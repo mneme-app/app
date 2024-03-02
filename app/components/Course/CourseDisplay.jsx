@@ -3,7 +3,7 @@ import { User } from "@/app/api/models";
 import { Card, ListItem } from "../client";
 import styles from "../Note/NoteDisplay.module.css";
 
-export async function CourseDisplay({ course }) {
+export async function CourseDisplay({ course, canRead }) {
     const user = await User.findById(course.createdBy);
     const dbCourse = await Course.findById(course._id)
         .populate("parentCourses")
@@ -13,6 +13,17 @@ export async function CourseDisplay({ course }) {
         <Card
             title={`${dbCourse.name}`}
             description={`${dbCourse.description}`}
+            buttons={
+                canRead
+                    ? [
+                          {
+                              label: "View Course",
+                              link: `/courses/${dbCourse.name}`,
+                              sameTab: true,
+                          },
+                      ]
+                    : []
+            }
         >
             <div className={styles.tags}>
                 <h5>Parent Courses</h5>

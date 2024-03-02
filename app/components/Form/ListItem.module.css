@@ -5,6 +5,7 @@
     border-radius: 4px;
     height: 28px;
     max-width: 350px;
+    width: fit-content;
     margin: 0 4px 4px 0;
     padding: 8px;
     display: flex;

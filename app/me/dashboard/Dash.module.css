@@ -7,6 +7,8 @@
 
 .main > section {
     max-width: 1700px;
+    height: calc(100vh - 80px);
+    height: calc(100dvh - 80px);
     padding: var(--padding);
     margin: 0 auto;
     position: relative;
@@ -19,21 +21,21 @@
 .tabList {
     position: absolute;
     top: 50%;
-    left: -105px;
+    left: -60px;
     transform: translateY(-50%);
     display: flex;
     flex-direction: column;
-    gap: 48px;
 }
 
 .tabList > li {
     display: flex;
     flex-direction: column;
-    color: var(--foreground-3);
+    color: var(--foreground-1);
     cursor: pointer;
     align-items: center;
-    border-radius: 5px;
+    border-radius: 50%;
     user-select: none;
+    margin: 24px 0;
 }
 
 .tabList > li:hover,
@@ -57,6 +59,7 @@
 }
 
 .tabList > li:hover > div,
+.tabList > li:focus-visible > div,
 .tabList > li.active > div {
     background: var(--background-3);
 }
@@ -72,31 +75,26 @@
 .content {
     display: flex;
     flex-direction: column;
-    max-height: 70vh;
     width: 100%;
 }
 
-.content > h1,
-.content > h2 {
+.content > p {
+    font-size: 1rem;
     text-align: center;
+    margin-bottom: 24px;
 }
 
-.content > h1 {
-    font-size: 2rem;
-}
-.content > h2 {
-    font-size: 1.75;
-    font-style: italic;
-}
-
-.content > header {
+.content header {
     display: flex;
     align-items: center;
-    gap: 32px;
+    flex-wrap: wrap;
     margin-bottom: 24px;
     border-radius: 10px;
     padding: 16px;
     background-color: var(--background-2);
+}
+
+.content > header {
     overflow-x: scroll;
 }
 
@@ -104,28 +102,26 @@
     display: none;
 }
 
-.content > header > h1,
-.content > header > h3 {
+.content header > h1,
+.content header > h3 {
     font-size: 36px;
     font-weight: 600;
     line-height: 1.2;
-    margin-bottom: 16px;
     margin: 0;
     display: flex;
     align-items: center;
-    gap: 16px;
     flex: 1 1 auto;
 }
 
-.content > header > h1 > img,
-.content > header > h3 > img {
+.content header > h1 > img,
+.content header > h3 > img {
     border-radius: 50%;
     width: 42px;
     height: 42px;
 }
 
-.content > header > h1 > span,
-.content > header > h3 > span {
+.content header > h1 > span,
+.content header > h3 > span {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -135,6 +131,14 @@
     height: 32px;
     padding: 6px 12px;
     white-space: nowrap;
+}
+
+.content header > h1 > :first-child {
+    margin-right: 16px;
+}
+
+.content header > h1 > :last-child {
+    margin-left: 16px;
 }
 
 .browseLink {
@@ -155,18 +159,18 @@
     color: var(--foreground-1);
 }
 
-.content > header > .chips {
+.content > header > .summaries {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
-    flex: 0 0 auto;
+    justify-content: space-around;
 }
 
-.content > header > .chips > div {
+.content header > .summaries > div {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    margin: 6px;
     padding: 6px 12px;
     border-radius: 100vw;
     background-color: var(--accent-3);
@@ -176,11 +180,20 @@
     line-height: 1.2;
 }
 
+.summaries > div > * {
+    margin: 0 4px;
+}
+
+.content > main > header {
+    display: none;
+}
+
 .content > main {
     background-color: var(--background-2);
     border-radius: 10px;
     padding: 24px 4px 24px 24px;
-    overflow: hidden scroll;
+    overflow-x: hidden;
+    overflow-y: scroll;
     flex: 1;
     min-height: 370px;
 }
@@ -190,7 +203,6 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 24px;
     align-items: center;
     justify-content: center;
     padding: 24px;
@@ -210,11 +222,20 @@
     align-items: center;
 }
 
+.content > main > div.column {
+    flex-direction: column;
+}
+
+.actionButtons {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
 .dashButton {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
     padding: 12px 24px 12px 16px;
     border-radius: 10px;
     background-color: var(--accent-1);
@@ -225,6 +246,10 @@
     border: 0px;
     cursor: pointer;
     transition: background-color 0.1s ease-in-out;
+}
+
+.dashButton > * {
+    margin: 6px;
 }
 
 .dashButton:hover {
@@ -284,7 +309,6 @@
 .input > div {
     display: flex;
     align-items: center;
-    gap: 8px;
     border-radius: 10px;
     background-color: var(--background-3);
     border: 1px solid var(--background-4);
@@ -316,7 +340,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
     padding: 8px 12px;
     margin-right: 8px;
     border-radius: 4px;
@@ -340,7 +363,7 @@
 }
 
 .userContent {
-    max-width: 100%;
+    min-width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -348,6 +371,9 @@
 .userContent > div {
     max-width: 100%;
     width: 100%;
+}
+
+.userContent > div:not(:last-child) {
     margin-bottom: 40px;
 }
 
@@ -365,8 +391,12 @@
     margin: -2px;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 24px;
     max-width: 100%;
+    margin-bottom: -24px;
+}
+
+.gridList > * {
+    margin: 0 24px 24px 0;
 }
 
 .chip {
@@ -390,7 +420,6 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 16px;
     padding: 16px;
     border-radius: 6px;
     background-color: var(--background-3);
@@ -422,7 +451,7 @@
 
 @media screen and (max-width: 2100px) {
     .main > section {
-        max-width: calc(100vw - 280px);
+        max-width: calc(100vw - 200px);
     }
 }
 
@@ -433,23 +462,41 @@
         padding-right: 0;
     }
 
+    .main > section {
+        padding-top: 40px;
+    }
+
     .tabList {
         position: fixed;
         bottom: 0;
         left: 0;
+        right: 0;
+        margin: 0 auto 16px auto;
         top: unset;
         transform: unset;
         flex-direction: row;
-        width: 100%;
-        z-index: 1;
-        padding: 8px 0px;
-        justify-content: space-evenly;
-        background-color: var(--background-4);
+        max-width: 90%;
+        z-index: 2;
+        padding: 8px 2px;
+        background-color: var(--background-2);
+        border-radius: 18px;
+        justify-content: space-between;
+        border: solid 1px var(--background-4);
+        height: 64px;
+    }
+
+    .tabList > li {
+        margin: auto;
+    }
+
+    .tabList > li > div.active,
+    .tabList > li > div.hover {
+        color: white;
     }
 
     .tabList > li > div {
-        width: 42px;
-        height: 42px;
+        width: 45px;
+        height: 45px;
     }
 
     .tabList > li > span {
@@ -457,14 +504,14 @@
     }
 
     .tabList > li > div > svg {
-        width: 20px;
-        height: 20px;
+        width: 25px;
+        height: 25px;
     }
 }
 
-@media screen and (max-width: 320px) {
+@media screen and (max-width: 375px) {
     .main > section {
-        max-width: calc(100vw - 24px);
+        min-width: calc(100vw - 24px);
         padding-left: 0;
         padding-right: 0;
     }
@@ -474,7 +521,32 @@
     }
 
     .content > header {
-        padding: 8px 12px;
+        display: none;
+    }
+
+    .content > main > header {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .content > main > header > .summaries {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+    .content > main > .summaries > div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 6px;
+        padding: 6px 12px;
+        border-radius: 100vw;
+        background-color: var(--accent-3);
+        color: var(--foreground-1);
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.2;
     }
 
     .empty {

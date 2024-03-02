@@ -12,17 +12,17 @@ export async function Header() {
     );
 
     return (
-        <header className={styles.header}>
-            <div>
+        <div className={styles.header}>
+            <header>
                 <div>
-                    <Link className={styles.heading} href="/">
+                    <Link className={styles.link} href="/">
                         Mneme
                     </Link>
                 </div>
 
                 <DynamicNav />
                 <RightContainer user={user} />
-            </div>
-        </header>
+            </header>
+        </div>
     );
 }

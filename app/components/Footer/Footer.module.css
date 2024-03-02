@@ -31,6 +31,8 @@
     margin-top: 8px;
     font-weight: 300;
     color: var(--foreground-3);
+    border-radius: 2px;
+    outline-offset: 2px;
 }
 
 .link:hover:not(.disabled) {
@@ -58,6 +60,8 @@
     font-size: 24px;
     font-weight: 800;
     font-family: var(--font-heading);
+    border-radius: 3px;
+    outline-offset: 2px;
 }
 
 @media (max-width: 768px) {
@@ -72,8 +76,8 @@
     }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 375px) {
     .footer {
-        padding: 0 10px;
+        display: none;
     }
 }

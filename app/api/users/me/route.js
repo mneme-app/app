@@ -6,7 +6,7 @@ import { useUser } from "@/lib/auth";
 import { User } from "@models";
 import bcrypt from "bcrypt";
 
-const cdn = "https://ucarecdn.com/";
+// const cdn = "https://ucarecdn.com/";
 
 export async function PATCH(req) {
     const {

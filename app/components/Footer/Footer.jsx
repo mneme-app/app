@@ -65,11 +65,11 @@ export function Footer() {
         <footer className={styles.footer}>
             <nav className={styles.links}>
                 {footerLinks.map((link) => (
-                    <ol>
+                    <ol key={encodeURI(link.category)}>
                         <div className={styles.title}>{link.category}</div>
 
-                        {link.links.map((link) => (
-                            <li>
+                        {link.links.map((link, index) => (
+                            <li key={`${encodeURI(link.name)}_${index}`}>
                                 <Link
                                     className={`${styles.link} ${
                                         link.link === "#" ? styles.disabled : ""

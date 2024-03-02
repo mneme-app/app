@@ -1,0 +1,14 @@
+.table {
+    padding: 1rem;
+    margin: 1rem;
+    border: 3px solid black;
+    overflow-x: scroll;
+}
+
+.table th {
+    background-color: aqua;
+}
+
+.table td {
+    border: 1px dashed black;
+}

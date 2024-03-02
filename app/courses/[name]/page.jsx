@@ -7,7 +7,6 @@ import { serializeOne } from "@/lib/db";
 
 export default async function CoursePage({ params }) {
     const user = await useUser({ token: cookies().get("token")?.value });
-    if (!user) return redirect("/login");
 
     const { name } = params;
     const nameDecoded = decodeURIComponent(name);
@@ -15,11 +14,8 @@ export default async function CoursePage({ params }) {
     const course = await Course.findOne({ name: nameDecoded })
         .populate("prerequisites.course")
         .populate("parentCourses");
-    if (!course) return redirect("/groups");
 
-    if (!canRead(course, user)) {
-        return redirect("/courses");
-    }
+    if (!course || !canRead(course, user)) return redirect("/courses");
 
-    return <CourseDash course={serializeOne(course)} />;
+    return <CourseDash course={serializeOne(course)} isLogged={user ? true : false} />;
 }

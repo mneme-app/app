@@ -1,20 +1,18 @@
 .header {
-    width: 100%;
     padding: 0 40px;
-    height: 80px;
 }
 
-.header > div {
-    height: 100%;
+.header > header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: var(--max-width);
     margin: 0 auto;
+    height: 80px;
     user-select: none;
 }
 
-.heading {
+.link {
     font-family: var(--font-heading);
     display: inline-flex;
     font-size: 32px;
@@ -23,16 +21,16 @@
     color: var(--foreground-1);
 }
 
-.header > div > nav {
+.header > header > nav {
     flex: 1;
 }
 
-.header > div > :not(:nth-child(2)) {
+.header > header > :not(:nth-child(2)) {
     width: 120px;
 }
 
 @media screen and (max-width: 768px) {
-    .header > div > nav {
+    .header > header > nav {
         display: none;
     }
 }
@@ -40,6 +38,9 @@
 @media screen and (max-width: 550px) {
     .header {
         padding: 0 20px;
+    }
+
+    .header > header {
         height: 60px;
     }
 }
@@ -47,6 +48,5 @@
 @media screen and (max-width: 320px) {
     .header {
         padding: 0 12px;
-        height: 60px;
     }
 }
