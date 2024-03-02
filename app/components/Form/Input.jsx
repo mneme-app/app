@@ -141,13 +141,17 @@ export function Input({
 
     const filteredChoices = useMemo(() => {
         if (choices) {
-            return choices.filter((c) =>
-                c.toString().toLowerCase().includes(search.toLowerCase()),
+            return choices.filter(
+                (c) =>
+                    c &&
+                    c.toString().toLowerCase().includes(search.toLowerCase()),
             );
         }
 
         return [];
     }, [choices, search]);
+
+    if (value === undefined) value = "";
 
     return (
         <div
