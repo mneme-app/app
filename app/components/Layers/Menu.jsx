@@ -43,7 +43,11 @@ export function Menu() {
             }
 
             if (e.key === "Tab") {
-                e.preventDefault();
+                if (!container.current.contains(document.activeElement)) {
+                    setMenu(null);
+                } else {
+                    e.preventDefault();
+                }
             }
 
             if (e.key === "ArrowDown") {

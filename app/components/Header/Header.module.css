@@ -2,7 +2,7 @@
     padding: 0 40px;
 }
 
-.header > header {
+.header > div {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -19,18 +19,20 @@
     border-radius: 5px;
     outline-offset: 4px;
     color: var(--foreground-1);
+    position: relative;
+    z-index: 11;
 }
 
-.header > header > nav {
+.header > div > nav {
     flex: 1;
 }
 
-.header > header > :not(:nth-child(2)) {
+.header > div > :not(:nth-child(2)) {
     width: 120px;
 }
 
 @media screen and (max-width: 768px) {
-    .header > header > nav {
+    .header > div > nav {
         display: none;
     }
 }
@@ -40,7 +42,7 @@
         padding: 0 20px;
     }
 
-    .header > header {
+    .header > div {
         height: 60px;
     }
 }

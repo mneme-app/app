@@ -1,13 +1,13 @@
 import { Source, Note, Quiz, Notification, Course } from "@models";
 import { FillStore, Timer, Alerts, Modals, Menu } from "@client";
 import { Header, Footer, DBConnectError } from "@server";
+import { queryReadableResources } from "@/lib/auth";
 import { serialize, serializeOne } from "@/lib/db";
 import { metadatas } from "@/lib/metadatas";
 import { cookies } from "next/headers";
 import { useUser } from "@/lib/auth";
 import connectDB from "./api/db";
 import "./globals.css";
-import { queryReadableResources } from "@/lib/auth";
 
 const connection = await connectDB();
 
@@ -55,15 +55,9 @@ export default async function RootLayout({ children }) {
 
     const query = queryReadableResources(user);
 
-    const sources = user
-        ? serialize(await Source.find(query))
-        : [];
-    const notes = user
-        ? serialize(await Note.find(query))
-        : [];
-    const quizzes = user
-        ? serialize(await Quiz.find(query))
-        : [];
+    const sources = user ? serialize(await Source.find(query)) : [];
+    const notes = user ? serialize(await Note.find(query)) : [];
+    const quizzes = user ? serialize(await Quiz.find(query)) : [];
     const courses = user
         ? [
               ...serialize(await Course.find({ createdBy: user.id })),
@@ -83,14 +77,13 @@ export default async function RootLayout({ children }) {
                     groups={serialize(user.groups)}
                     associates={serialize(user.associates)}
                     notifications={notifications}
-                    // webSocketURL={process.env.WS_URL}
                 />
             )}
 
             <body>
                 <Header />
                 {children}
-                {/* {pathname !== "/me/dashboard" && <Footer />} */}
+                <Footer />
 
                 <Timer />
                 <Alerts />

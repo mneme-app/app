@@ -18,70 +18,84 @@ export function Label({ required, label, htmlFor, checkbox }) {
 }
 
 export function Input({
+    id,
     type,
+    value,
+    error,
+    label,
+    choices,
     pattern,
     description,
-    autoComplete,
-    choices,
+    placeholder,
+    big,
+    inline,
     required,
-    onChange,
-    value,
+    disabled,
+    readOnly,
+    autoFocus,
+    autoComplete,
     min,
     max,
     minLength,
     maxLength,
-    error,
-    label,
+    maxValues,
+    onChange,
     onFocus,
     onBlur,
-    readOnly,
-    disabled,
-    autoFocus,
-    inline,
-    placeholder,
+    onEnter,
     removeItem,
-    big,
-    maxValues,
 }) {
-    const [inputId, setInputId] = useState("");
-    const [errorId, setErrorId] = useState("");
-
     const [showChoices, setShowChoices] = useState(false);
     const [search, setSearch] = useState("");
 
     const input = useRef(null);
+    const inputContainer = useRef(null);
     const container = useRef(null);
     const firstItem = useRef(null);
     const lastItem = useRef(null);
 
-    useEffect(() => {
-        if (!label) return;
-        const id = `${label.split(" ").join("_")}-${makeUniqueId()}`;
+    const { inputId, errorId } = useMemo(() => {
+        if (!label) return {};
 
-        setInputId(id);
-        setErrorId(`${id}-error`);
-    }, []);
+        if (id) {
+            return {
+                inputId: id,
+                errorId: `${id}-error`,
+            };
+        }
+
+        const randomId = `${label.split(" ").join("_")}-${makeUniqueId()}`;
+
+        return {
+            inputId: randomId,
+            errorId: `${randomId}-error`,
+        };
+    }, [label, id]);
 
     useEffect(() => {
+        if (
+            !container.current ||
+            !firstItem.current ||
+            !lastItem.current ||
+            !input.current
+        ) {
+            return;
+        }
+
         function handleKeyDown(e) {
-            if (!container.current || !firstItem.current || !lastItem.current) {
-                return;
-            }
-
             if (e.key === "Escape" && showChoices) {
                 setShowChoices(false);
-                const element = document.getElementById(inputId);
-                if (element) element.focus();
+                input.current.focus();
             }
 
-            if (e.key === "ArrowDown") {
+            const currentFocused = document.activeElement;
+
+            if (e.key === "ArrowDown" && showChoices) {
                 e.preventDefault();
 
-                if (!container.current.contains(document.activeElement)) {
+                if (!container.current.contains(currentFocused)) {
                     firstItem.current.focus();
                 } else {
-                    const currentFocused = document.activeElement;
-
                     if (currentFocused === lastItem.current) {
                         // firstItem.current.focus();
                         return;
@@ -92,16 +106,22 @@ export function Input({
 
                     if (nextItem) nextItem.focus();
                 }
+            } else if (
+                e.key === "ArrowDown" &&
+                !showChoices &&
+                type === "select" &&
+                currentFocused === input.current
+            ) {
+                setShowChoices(true);
+                firstItem.current.focus();
             }
 
-            if (e.key === "ArrowUp") {
+            if (e.key === "ArrowUp" && showChoices) {
                 e.preventDefault();
 
-                if (!container.current.contains(document.activeElement)) {
+                if (!container.current.contains(currentFocused)) {
                     lastItem.current.focus();
                 } else {
-                    const currentFocused = document.activeElement;
-
                     if (currentFocused === firstItem.current) {
                         // lastItem.current.focus();
                         return;
@@ -112,29 +132,37 @@ export function Input({
 
                     if (prevItem) prevItem.focus();
                 }
+            } else if (
+                e.key === "ArrowUp" &&
+                !showChoices &&
+                type === "select" &&
+                currentFocused === input.current
+            ) {
+                setShowChoices(true);
+                lastItem.current.focus();
             }
         }
 
         document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-        };
+        return () => document.removeEventListener("keydown", handleKeyDown);
     }, [showChoices, firstItem, lastItem, container, input]);
 
-    useEffect(() => {
-        if (!showChoices) return;
+    if (type === "select") {
+        useEffect(() => {
+            if (!showChoices || !container.current) return;
 
-        function handleClick(e) {
-            if (container.current && !container.current.contains(e.target)) {
-                console.log("click");
-                setShowChoices(false);
+            function handleMouseDown(e) {
+                if (!container.current.contains(e.target)) {
+                    console.log("click");
+                    setShowChoices(false);
+                }
             }
-        }
 
-        document.addEventListener("mousedown", handleClick);
-        return () => document.removeEventListener("mousedown", handleClick);
-    }, [showChoices]);
+            document.addEventListener("mousedown", handleMouseDown);
+            return () =>
+                document.removeEventListener("mousedown", handleMouseDown);
+        }, [showChoices, container]);
+    }
 
     // Multiple is true if value is an array
     const multiple = Array.isArray(value);
@@ -153,19 +181,23 @@ export function Input({
 
     if (value === undefined) value = "";
 
+    const classNames = [
+        styles.wrapper,
+        inline && styles.inline,
+        disabled && styles.disabled,
+        type === "toggle" && styles.toggle,
+        type === "select" && styles.select,
+        big && styles.big,
+        multiple && styles.multiple,
+        readOnly && styles.readonly,
+        showChoices && styles.popupOpen,
+    ]
+        .filter(Boolean)
+        .join(" ");
+
     return (
         <div
-            className={`
-                ${styles.wrapper}
-                ${inline ? styles.inline : ""}
-                ${disabled ? styles.disabled : ""}
-                ${type === "toggle" ? styles.toggle : ""}
-                ${type === "select" ? styles.select : ""}
-                ${big ? styles.big : ""}
-                ${multiple ? styles.multiple : ""}
-                ${readOnly ? styles.readonly : ""}
-                ${showChoices ? styles.popupOpen : ""}
-            `}
+            className={classNames}
             onClick={() => {
                 if (type === "toggle" && onChange) {
                     onChange();
@@ -181,13 +213,12 @@ export function Input({
             )}
 
             <div
-                ref={input}
+                ref={inputContainer}
                 className={`${styles.container} ${error ? styles.error : ""}`}
                 onMouseDown={() => {
-                    const element = document.getElementById(inputId);
-                    if (element) element.focus();
+                    input.current.focus();
 
-                    console.log(element);
+                    console.log(input.current);
 
                     if (type === "select" && readOnly) {
                         setShowChoices(!showChoices);
@@ -267,6 +298,7 @@ export function Input({
 
                 {type === "textarea" ? (
                     <textarea
+                        ref={input}
                         id={inputId}
                         disabled={disabled || false}
                         className="thinScroller"
@@ -350,8 +382,9 @@ export function Input({
                         </svg>
 
                         <input
-                            type="checkbox"
+                            ref={input}
                             id={inputId}
+                            type="checkbox"
                             autoCapitalize="none"
                             autoFocus={autoFocus || false}
                             autoComplete={autoComplete || "off"}
@@ -367,6 +400,7 @@ export function Input({
                     </div>
                 ) : (
                     <input
+                        ref={input}
                         min={min}
                         max={max}
                         id={inputId}
@@ -403,7 +437,10 @@ export function Input({
                         minLength={minLength}
                         maxLength={maxLength}
                         onKeyDown={(e) => {
-                            if (e.key === "Enter") e.preventDefault();
+                            if (e.key === "Enter") {
+                                e.preventDefault();
+                                if (onEnter) onEnter(e);
+                            }
 
                             if (
                                 e.key === "Backspace" &&
@@ -483,9 +520,7 @@ export function Input({
                                 onChange(choice);
                                 if (!multiple) {
                                     setShowChoices(false);
-                                    const element =
-                                        document.getElementById(inputId);
-                                    if (element) element.focus();
+                                    input.current.focus();
                                 }
                             }}
                             onKeyDown={(e) => {
@@ -494,9 +529,7 @@ export function Input({
                                     onChange(choice);
                                     if (!multiple) {
                                         setShowChoices(false);
-                                        const element =
-                                            document.getElementById(inputId);
-                                        if (element) element.focus();
+                                        input.current.focus();
                                     }
                                 }
                             }}

@@ -82,19 +82,19 @@ export function NoteInput({ note }) {
 
         let valid = true;
 
-        if (title.length < MIN.title || title.length > MAX.title) {
+        if (title.length < MIN.noteTitle || title.length > MAX.noteTitle) {
             valid = false;
             setErrors((prev) => ({
                 ...prev,
-                title: `Title must be between ${MIN.title} and ${MAX.title} characters long`,
+                title: `Title must be between ${MIN.noteTitle} and ${MAX.noteTitle} characters long`,
             }));
         }
 
-        if (text.length < MIN.text || text.length > MAX.text) {
+        if (text.length < MIN.noteText || text.length > MAX.noteText) {
             valid = false;
             setErrors((prev) => ({
                 ...prev,
-                text: `Text must be between ${MIN.text} and ${MAX.text} characters long`,
+                text: `Text must be between ${MIN.noteText} and ${MAX.noteText} characters long`,
             }));
         }
 

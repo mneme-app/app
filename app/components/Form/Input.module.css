@@ -241,11 +241,11 @@
 
 .subtext > div > span {
     color: var(--error);
-    font-weight: 500;
+    font-weight: 600;
 }
 
 .subtext > div {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 20px;
     user-select: none;
 }

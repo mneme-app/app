@@ -12,17 +12,47 @@
     display: none;
     border: none;
     background: transparent;
-    padding: 10px;
+    padding: 6px;
     cursor: pointer;
     color: var(--foreground-2);
     border-radius: 8px;
-    margin-right: -10px;
     position: relative;
-    z-index: 100;
+    z-index: 11;
 }
 
 .button:hover {
     color: var(--foreground-1);
+}
+
+.icon rect {
+    transition:
+        y 100ms ease-in 100ms,
+        rotate 100ms ease-in,
+        opacity 0ms 100ms;
+    transform-origin: center;
+}
+
+.icon.open rect {
+    transition:
+        y 100ms ease-in,
+        rotate 100ms ease-in 100ms,
+        opacity 0ms 100ms;
+}
+
+.icon.open :is(rect:first-child, rect:last-child) {
+    y: 45;
+}
+
+.icon.open rect:first-child {
+    rotate: 45deg;
+}
+
+.icon.open rect:nth-child(2) {
+    opacity: 0;
+}
+
+.icon.open rect:last-child {
+    rotate: -45deg;
 }
 
 .container > a {
@@ -54,54 +84,39 @@
     position: fixed;
     top: 0;
     left: 0;
-    min-height: 100vh;
-    min-height: 100dvh;
-    min-width: 100vw;
-    min-width: 100dvw;
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    width: 100dvw;
     background-color: var(--background-1);
-    z-index: 100;
+    z-index: 10;
     display: none;
-    animation: rightToLeft 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    animation: rightToLeft 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    padding-left: var(--scrollbar-width);
 }
 
-.menu > button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--foreground-2);
-    background: transparent;
-    border: none;
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    cursor: pointer;
-    padding: 10px;
-}
-
-.menu > button:hover {
-    color: var(--foreground-1);
-}
-
-.menu > nav {
-    margin-top: 80px;
-}
-
-.menu > nav > ul {
+.list {
+    padding-top: 24px;
+    margin: 80px 20px 20px 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     list-style: none;
-    padding-left: 24px;
-    gap: 12px;
-    font-size: 24px;
+    border-top: 1px solid var(--foreground-4);
 }
 
-.menu ul a {
-    color: var(--foreground-2);
+.list a {
+    display: flex;
+    color: var(--foreground-3);
+    font-size: 16px;
+    padding: 8px 16px;
+    line-height: 24px;
+    border-radius: 5px;
 }
 
-.menu ul a:hover {
+.list a:hover,
+.list a:focus-visible {
     color: var(--accent-1);
+    background-color: var(--background-2);
 }
 
 .profile {
@@ -137,7 +152,7 @@
     }
 
     .menu {
-        display: flex;
+        display: block;
     }
 
     .button {

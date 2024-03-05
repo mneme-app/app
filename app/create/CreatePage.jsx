@@ -22,6 +22,7 @@ export function Create() {
             created() {
                 setLoaded(true);
             },
+            drag: false,
         },
         [],
     );
@@ -65,33 +66,30 @@ export function Create() {
         <main className={styles.main}>
             <div>
                 <ul className={styles.nav}>
-                    {loaded &&
-                        instanceRef.current &&
-                        [
-                            ...Array(
-                                instanceRef.current.track.details?.slides
-                                    ?.length,
-                            ).keys(),
-                        ].map((idx) => (
-                            <li key={idx} ref={categories[idx].ref}>
-                                <button
-                                    onClick={() => {
-                                        instanceRef.current?.moveToIdx(idx);
-                                    }}
-                                    className={`${styles.category} ${
-                                        current === idx ? styles.current : ""
-                                    }`}
-                                >
-                                    {categories[idx].name}
-                                </button>
-                            </li>
-                        ))}
+                    {categories.map((c, i) => (
+                        <li key={c.name} ref={categories[i].ref}>
+                            <button
+                                onClick={() => {
+                                    instanceRef.current?.moveToIdx(i);
+                                }}
+                                className={`${styles.category} ${
+                                    current === i ? styles.current : ""
+                                }`}
+                            >
+                                {c.name}
+                            </button>
+                        </li>
+                    ))}
 
                     <div className={styles.active} style={{ ...props }} />
                 </ul>
 
                 <section className={styles.section}>
-                    <div ref={sliderRef} className="keen-slider">
+                    <div
+                        ref={sliderRef}
+                        className="keen-slider"
+                        style={{ opacity: loaded ? 1 : 0 }}
+                    >
                         {categories.map((c) => (
                             <div
                                 key={c.name}

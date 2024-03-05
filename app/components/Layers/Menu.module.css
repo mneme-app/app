@@ -47,8 +47,7 @@
     color: var(--error);
 }
 
-.container > ul > li:hover,
-.container > ul > li:focus-visible {
+.container > ul > li:focus {
     background-color: var(--background-3);
     outline: none;
 }

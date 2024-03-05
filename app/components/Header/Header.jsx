@@ -12,8 +12,8 @@ export async function Header() {
     );
 
     return (
-        <div className={styles.header}>
-            <header>
+        <header className={styles.header}>
+            <div>
                 <div>
                     <Link className={styles.link} href="/">
                         Mneme
@@ -22,7 +22,7 @@ export async function Header() {
 
                 <DynamicNav />
                 <RightContainer user={user} />
-            </header>
-        </div>
+            </div>
+        </header>
     );
 }
