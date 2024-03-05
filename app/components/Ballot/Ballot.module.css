@@ -9,7 +9,9 @@
 }
 
 .main h3 {
-    font-weight: normal;
+    font-weight: 400;
+    line-height: 1.8;
+    margin-bottom: 20px;
 }
 
 .inputs > * {

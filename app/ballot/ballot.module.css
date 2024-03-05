@@ -14,6 +14,11 @@
 
 .ballot {
     flex: 1;
+    margin-bottom: 140px;
+}
+
+.ballot:last-child {
+    margin-bottom: 0;
 }
 
 .ballot > h2 {
@@ -39,6 +44,7 @@
     position: sticky;
     top: 40px;
     text-align: right;
+    user-select: none;
 }
 
 .svg {
@@ -70,10 +76,11 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 4px;
+    padding: 2px 4px;
     background-color: var(--background-3);
     border-radius: 4px;
     line-height: 14px;
+    font-size: 12px;
 }
 
 .categories a:hover {
@@ -95,12 +102,21 @@
     background-color: var(--background-4);
     box-shadow: 0 4px 8px 0 hsla(0, 0%, 0%, 0.2);
     animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition:
+        background-color 0.15s ease-in-out,
+        color 0.15s ease-in-out,
+        transform 0.15s ease-in-out;
 }
 
 .returnTop:hover,
 .returnTop:focus-visible {
-    color: var(--foreground-1);
+    color: var(--foreground-2);
     background-color: var(--background-3);
+}
+
+.returnTop:active {
+    color: var(--foreground-1);
+    transform: scale(0.95);
 }
 
 @keyframes popIn {
