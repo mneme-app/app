@@ -116,20 +116,12 @@ export function Ballot({
 
     return (
         <div className={styles.main}>
-            <h3 style={{ whiteSpace: "pre-wrap" }}>{motion}</h3>
             {!submitted && (
-                <p
-                    style={{
-                        backgroundColor: "red",
-                        padding: "1rem",
-                        color: "white",
-                        fontWeight: "bolder",
-                        borderRadius: "20px",
-                    }}
-                >
-                    Awaiting Your Vote
-                </p>
+                <p className={styles.waitingTip}>Awaiting Your Vote</p>
             )}
+
+            <h3 style={{ whiteSpace: "pre-wrap" }}>{motion}</h3>
+
             <section>
                 <h4>Your Choices Are:</h4>
                 <ol>

@@ -1,23 +1,21 @@
-import { NextResponse } from "next/server";
 import { canEdit, queryReadableResources, useUser } from "@/lib/auth";
-import { cookies } from "next/headers";
-// import { Note } from "@mneme_app/database-models";
-import { Note } from "@/app/api/models";
 import { server, unauthorized } from "@/lib/apiErrorResponses";
-import { Types } from "mongoose";
-import { serializeOne } from "@/lib/db";
 import { buildPermissions } from "@/lib/permissions";
-import { MAX } from "@/lib/constants";
 import SubmitErrors from "@/lib/SubmitErrors";
+import { NextResponse } from "next/server";
+import { MIN, MAX } from "@/lib/constants";
+import { Note } from "@/app/api/models";
+import { serializeOne } from "@/lib/db";
+import { cookies } from "next/headers";
+import { Types } from "mongoose";
 
 export async function GET(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
-        if (!user) {
-            return unauthorized;
-        }
+        if (!user) return unauthorized;
 
         const content = await Note.find(queryReadableResources(user));
+
         return NextResponse.json(
             {
                 content,
@@ -33,31 +31,26 @@ export async function GET(req) {
 export async function POST(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
-
-        if (!user) {
-            return unauthorized;
-        }
+        if (!user) return unauthorized;
 
         const { title, text, sources, courses, tags, permissions } =
             await req.json();
 
         const submitErrors = new SubmitErrors();
 
-        if (!text) {
-            submitErrors.addError("Missing text");
-        } else if (text.length > MAX.noteText) {
+        if (text.length < MIN.noteText || text.length > MAX.noteText) {
             submitErrors.addError(
-                `The following text is longer than the maximum permitted, which is ${MAX.noteText} characters:\n ${text}`,
+                `Text must be between ${MIN.noteText} and ${MAX.noteText} characters long`,
             );
         }
 
-        if (title && title.length > MAX.title) {
+        if (title.length < MIN.title || title.length > MAX.title) {
             submitErrors.addError(
-                `The following title is longer than the maximum permitted, which is ${MAX.title} characters:\n ${title}`,
+                `Title must be between ${MIN.title} and ${MAX.title} characters long`,
             );
         }
 
-        if (sources.length < 1) {
+        if (sources.length === 0) {
             submitErrors.addError(
                 "At least one source is required to create a note",
             );
@@ -65,14 +58,14 @@ export async function POST(req) {
 
         tags.forEach((tag) => {
             if (typeof tag !== "string") {
-                submitErrors.addError(
-                    `The following tag is not valid:\n ${tag.toString()}`,
+                return submitErrors.addError(
+                    `"${typeof tag}" is not a valid tag type. Tags must be strings.`,
                 );
-                return;
             }
-            if (tag.length > MAX.tag) {
+
+            if (tag.length < MIN.tag || tag.length > MAX.tag) {
                 submitErrors.addError(
-                    `The following tag is longer than the maximum permitted, which is ${MAX.tag} characters: \n ${tag}`,
+                    `Tags must be between ${MIN.tag} and ${MAX.tag} characters long`,
                 );
             }
         });
@@ -93,6 +86,7 @@ export async function POST(req) {
             tags: [...tags],
             contributors: [user._id],
         });
+
         note.permissions = buildPermissions(permissions);
 
         const content = await note.save();
@@ -106,10 +100,7 @@ export async function POST(req) {
 export async function PUT(req) {
     try {
         const user = await useUser({ token: cookies().get("token")?.value });
-
-        if (!user) {
-            return unauthorized;
-        }
+        if (!user) return unauthorized;
 
         const { _id, title, text, sources, courses, tags, permissions } =
             await req.json();

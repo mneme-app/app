@@ -1,11 +1,11 @@
-import styles from "./ballot.module.css";
 import { Ballot } from "../components/Ballot/Ballot";
-import BallotModel from "../api/models/Ballot";
-import { useUser } from "@/lib/auth";
-import { cookies } from "next/headers";
-import { serializeOne } from "@/lib/db";
-import questionnaire from "./questionnaire";
 import { BallotProgress } from "./ballotProgress";
+import BallotModel from "../api/models/Ballot";
+import questionnaire from "./questionnaire";
+import styles from "./ballot.module.css";
+import { serializeOne } from "@/lib/db";
+import { cookies } from "next/headers";
+import { useUser } from "@/lib/auth";
 
 export default async function BallotPage() {
     const user = await useUser({ token: cookies().get("token")?.value });
@@ -45,24 +45,39 @@ export default async function BallotPage() {
 
     return (
         <main className={styles.main}>
-            <BallotProgress motions={motions} ballots={votes} />
+            <div>
+                <BallotProgress
+                    questions={questions}
+                    motions={motions}
+                    ballots={votes}
+                />
 
-            {questions.map((point, index) => (
-                <section key={index}>
-                    <h2>{point.heading}</h2>
-                    <ol>
-                        {point.ballots.map((ballot, index) => (
-                            <li key={index}>
-                                <Ballot
-                                    motion={ballot.motion}
-                                    choices={ballot.choices}
-                                    ballot={ballot.ballot}
-                                />
-                            </li>
-                        ))}
-                    </ol>
-                </section>
-            ))}
+                <div className={styles.ballots}>
+                    {questions.map((point, index) => (
+                        <section
+                            key={index}
+                            className={styles.ballot}
+                            id={point.heading}
+                        >
+                            <h2>{point.heading}</h2>
+
+                            <ol>
+                                {point.ballots.map((ballot, index) => (
+                                    <li key={index}>
+                                        <Ballot
+                                            motion={ballot.motion}
+                                            choices={ballot.choices}
+                                            ballot={ballot.ballot}
+                                        />
+                                    </li>
+                                ))}
+                            </ol>
+                        </section>
+                    ))}
+                </div>
+
+                <div />
+            </div>
         </main>
     );
 }
