@@ -15,6 +15,7 @@
 .ballot {
     flex: 1;
     margin-bottom: 140px;
+    scroll-margin-top: 40px;
 }
 
 .ballot:last-child {
@@ -23,8 +24,24 @@
 
 .ballot > h2 {
     font-size: 32px;
+    font-weight: 500;
     line-height: 38px;
     margin-bottom: 24px;
+    cursor: pointer;
+    width: fit-content;
+    color: var(--foreground-2);
+}
+
+.ballot > h2:hover {
+    color: var(--foreground-1);
+}
+
+.ballot > h2 svg {
+    display: none;
+}
+
+.ballot > h2:hover svg {
+    display: inline;
 }
 
 .ballot > ol > li {
@@ -69,6 +86,10 @@
     font-weight: 400;
     color: var(--foreground-3);
     line-height: 1.8;
+}
+
+.categories a.active {
+    color: var(--accent-1) !important;
 }
 
 .categories a > span {

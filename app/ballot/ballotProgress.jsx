@@ -26,8 +26,35 @@ export function BallotProgress({ questions, motions, ballots }) {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    console.log("Votes: ", votes);
-    console.log("Questions: ", questions);
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        console.log("intersecting ", entry.target.id);
+                        const id = entry.target.id;
+                        const link = document.querySelector(`a[href="#${id}"]`);
+                        link.classList.add(styles.active);
+                    } else {
+                        console.log("not intersecting ", entry.target.id);
+                        const id = entry.target.id;
+                        const link = document.querySelector(`a[href="#${id}"]`);
+                        link.classList.remove(styles.active);
+                    }
+                });
+            },
+            {
+                rootMargin: "0px",
+                threshold: 0.01,
+            },
+        );
+
+        document.querySelectorAll(`.${styles.ballot}`).forEach((section) => {
+            observer.observe(section);
+        });
+
+        return () => observer.disconnect();
+    }, []);
 
     return (
         <>
