@@ -10,17 +10,12 @@ import { Input, Spinner } from "@client";
 
 export function UserInput({ isRegistering, onSubmit }) {
     const [username, setUsername] = useState("");
-    const [usernameError, setUsernameError] = useState("");
-
     const [password, setPassword] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [confirmPasswordError, setConfirmPasswordError] = useState("");
-
-    const [loading, setLoading] = useState(false);
 
     const [passwordFocus, setPasswordFocus] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({});
 
     const addAlert = useAlerts((state) => state.addAlert);
     const addModal = useModals((state) => state.addModal);
@@ -30,7 +25,7 @@ export function UserInput({ isRegistering, onSubmit }) {
     const router = useRouter();
 
     useEffect(() => {
-        const handleOutsideClick = (e) => {
+        function handleClick(e) {
             if (
                 passwordFocus &&
                 !passwordTooltip.current?.contains(e.target) &&
@@ -38,10 +33,10 @@ export function UserInput({ isRegistering, onSubmit }) {
             ) {
                 setPasswordFocus(false);
             }
-        };
+        }
 
-        document.addEventListener("click", handleOutsideClick);
-        return () => document.removeEventListener("click", handleOutsideClick);
+        document.addEventListener("click", handleClick);
+        return () => document.removeEventListener("click", handleClick);
     }, [passwordFocus]);
 
     const passwordWeaknesses = [
@@ -77,11 +72,17 @@ export function UserInput({ isRegistering, onSubmit }) {
         e.preventDefault();
 
         if (username.length === 0) {
-            setUsernameError("Username cannot be empty");
+            setErrors((prev) => ({
+                ...prev,
+                username: "Username cannot be empty",
+            }));
         }
 
         if (password.length === 0) {
-            setPasswordError("Password cannot be empty");
+            setErrors((prev) => ({
+                ...prev,
+                password: "Password cannot be empty",
+            }));
         }
 
         if (
@@ -89,7 +90,7 @@ export function UserInput({ isRegistering, onSubmit }) {
                 password,
             )
         ) {
-            setPasswordError("Password is too weak");
+            setErrors((prev) => ({ ...prev, password: "Invalid password" }));
             setPasswordFocus(true);
             let weaknessesModal = (
                 <ul>
@@ -106,7 +107,10 @@ export function UserInput({ isRegistering, onSubmit }) {
         }
 
         if (password !== confirmPassword) {
-            setConfirmPasswordError("Passwords do not match");
+            setErrors((prev) => ({
+                ...prev,
+                confirmPassword: "Passwords do not match",
+            }));
             return;
         }
 
@@ -132,7 +136,10 @@ export function UserInput({ isRegistering, onSubmit }) {
         setLoading(false);
 
         if (response.status === 400) {
-            setUsernameError("Username already exists");
+            setErrors((prev) => ({
+                ...prev,
+                username: "Username already exists",
+            }));
             return;
         }
 
@@ -142,15 +149,14 @@ export function UserInput({ isRegistering, onSubmit }) {
             setUsername("");
             setPassword("");
             setConfirmPassword("");
-            setUsernameError("");
-            setPasswordError("");
-            setConfirmPasswordError("");
+            setErrors({});
             setPasswordFocus(false);
 
             addAlert({
                 success: true,
                 message: "Account created successfully",
             });
+
             if (onSubmit) onSubmit();
         } else {
             addAlert({
@@ -164,11 +170,17 @@ export function UserInput({ isRegistering, onSubmit }) {
         e.preventDefault();
 
         if (username.length === 0) {
-            setUsernameError("Username cannot be empty");
+            setErrors((prev) => ({
+                ...prev,
+                username: "Username cannot be empty",
+            }));
         }
 
         if (password.length === 0) {
-            setPasswordError("Password cannot be empty");
+            setErrors((prev) => ({
+                ...prev,
+                password: "Password cannot be empty",
+            }));
         }
 
         if (username.length === 0 || password.length === 0) {
@@ -199,9 +211,7 @@ export function UserInput({ isRegistering, onSubmit }) {
             setUsername("");
             setPassword("");
             setConfirmPassword("");
-            setUsernameError("");
-            setPasswordError("");
-            setConfirmPasswordError("");
+            setErrors({});
             setPasswordFocus(false);
 
             addAlert({
@@ -210,37 +220,43 @@ export function UserInput({ isRegistering, onSubmit }) {
             });
             if (onSubmit) onSubmit();
         } else {
-            setUsernameError("Invalid username or password");
+            setErrors({ username: "Invalid username or password" });
         }
     }
 
     return (
-        <form className="formGrid">
+        <form
+            className="formGrid"
+            onSubmit={(e) => {
+                e.preventDefault();
+                isRegistering ? handleRegister(e) : handleLogin(e);
+            }}
+        >
             <Input
                 required
+                label="Username"
+                value={username}
+                autoFocus={true}
+                error={errors.username}
                 onChange={(val) => {
                     setUsername(val);
-                    setUsernameError("");
+                    setErrors((prev) => ({ ...prev, username: "" }));
                 }}
-                value={username}
-                error={usernameError}
-                label={"Username"}
-                autoFocus={true}
             />
 
             <div style={{ position: "relative" }} ref={passwordInput}>
                 <Input
-                    type={"password"}
-                    required={true}
-                    onChange={(val) => {
-                        setPassword(val);
-                        setPasswordError("");
-                    }}
+                    required
+                    type="password"
+                    label="Password"
                     value={password}
-                    error={isRegistering && passwordError}
-                    label={"Password"}
+                    error={isRegistering && errors.password}
                     onFocus={() => setPasswordFocus(true)}
                     onBlur={() => setPasswordFocus(false)}
+                    onChange={(val) => {
+                        setPassword(val);
+                        setErrors((prev) => ({ ...prev, password: "" }));
+                    }}
                 />
 
                 {passwordFocus && isRegistering && (
@@ -282,15 +298,15 @@ export function UserInput({ isRegistering, onSubmit }) {
 
             {isRegistering && (
                 <Input
-                    type={"password"}
-                    required={true}
+                    required
+                    type="password"
+                    label="Password Match"
+                    value={confirmPassword}
+                    error={errors.confirmPassword}
                     onChange={(val) => {
                         setConfirmPassword(val);
-                        setConfirmPasswordError("");
+                        setErrors((prev) => ({ ...prev, confirmPassword: "" }));
                     }}
-                    value={confirmPassword}
-                    error={confirmPasswordError}
-                    label={"Password Match"}
                 />
             )}
 
