@@ -14,7 +14,7 @@ Traditional flashcards are so last season! Mneme brings a breath of fresh air to
 
 Mneme is an open-source project, and we're calling all passionate learners and developers to join us on this journey. [Explore the source code on GitHub](https://github.com/mneme-app/app.git), create your own fork, and send pull requests to shape the future of Mneme. Together, we can make learning an exciting adventure!
 
-Need a place to discuss ideas and get involved? Visit our vibrant [Discord server](https://discord.gg/PcsjqPFh).
+Need a place to discuss ideas and get involved? Visit our vibrant [Discord server](https://discord.com/invite/GNzuTVY9zF).
 
 ## Get Started with Mneme 🏁
 
