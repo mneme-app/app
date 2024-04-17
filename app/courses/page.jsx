@@ -36,14 +36,6 @@ export default async function CoursesPage({ searchParams }) {
                     </ol>
                 </section>
             )}
-
-            {user && (
-                <section>
-                    <h3>Create new course</h3>
-
-                    <CourseInput />
-                </section>
-            )}
         </main>
     );
 }

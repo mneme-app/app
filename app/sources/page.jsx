@@ -109,14 +109,6 @@ export default async function SourcesPage({ searchParams }) {
                     </div>
                 </section>
             )}
-
-            {user && (
-                <section>
-                    <h3>Create new source</h3>
-
-                    <SourceInput />
-                </section>
-            )}
         </main>
     );
 }

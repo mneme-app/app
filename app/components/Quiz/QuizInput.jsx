@@ -541,8 +541,17 @@ export function QuizInput({ quiz }) {
                 <h4>Advanced</h4>
                 <div className={styles.hints}>
                     <Label label="Hints" />
+                    <Input
+                        label={"Add Hint"}
+                        value={newHint}
+                        maxLength={MAX.response}
+                        description="A hint that may help the user remember the correct answer"
+                        onChange={(e) => setNewHint(e.target.value)}
+                        action="Add hint"
+                        onActionTrigger={handleAddHint}
+                    />
 
-                    <ul className="chipList">
+<ul className="chipList">
                         {hints.length === 0 && (
                             <ListItem item="No hints added" />
                         )}
@@ -558,19 +567,11 @@ export function QuizInput({ quiz }) {
                             />
                         ))}
                     </ul>
-
-                    <Input
-                        label={"Add Hint"}
-                        value={newHint}
-                        maxLength={MAX.response}
-                        description="A hint that may help the user remember the correct answer"
-                        onChange={(e) => setNewHint(e.target.value)}
-                        action="Add hint"
-                        onActionTrigger={handleAddHint}
-                    />
                 </div>
+                
 
                 <div className={styles.tags}>
+                <Label label="Tabs" />
                     {/* <Label label="Tags" />
 
                     <ul className="chipList">

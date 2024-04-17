@@ -112,13 +112,6 @@ export default async function NotesPage({ searchParams }) {
                     </div>
                 </section>
             )}
-
-            {user && (
-                <section>
-                    <h3>Create new note</h3>
-                    <NoteInput />
-                </section>
-            )}
         </main>
     );
 }

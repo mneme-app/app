@@ -4,9 +4,8 @@
 @import url(../components/Course/CourseInput.module.css);
 
 .tabsContainer{
-    width: 40%;
+    width: 90%;
     margin: 40px auto;
-    border-radius: 20px;
 }
 .tabs{
     display: flex;
@@ -22,9 +21,63 @@
 }
 
 .cards{
-    width: 70%;
+    width: 90%;
     margin: 30px auto 100px auto;
-    padding: 40px;
+    padding: 20px;
     border-radius: 20px;
     background-color: var(--background-2);
+}
+
+@media only screen and (min-width: 480px)  {
+    .tabsContainer{
+        width: 60%;
+        margin: 40px auto;
+    }
+    .tabs{
+        display: flex;
+        justify-content: space-between;
+        font-size: 25px;
+        font-weight: 100;
+        font-family: var(--font-heading);
+        cursor: pointer;
+    }
+    
+    .active{
+        font-weight: 600;
+    }
+    
+    .cards{
+        width: 80%;
+        margin: 30px auto 100px auto;
+        padding: 40px;
+        border-radius: 20px;
+        background-color: var(--background-2);
+    }
+}
+
+@media only screen and (min-width: 1024px)  {
+    .tabsContainer{
+        width: 40%;
+        margin: 40px auto;
+    }
+    .tabs{
+        display: flex;
+        justify-content: space-between;
+        font-size: 25px;
+        font-weight: 100;
+        font-family: var(--font-heading);
+        cursor: pointer;
+    }
+    
+    .active{
+        font-weight: 600;
+    }
+    
+    .cards{
+        width: 65%;
+        margin: 30px auto 100px auto;
+        padding: 40px;
+        border-radius: 20px;
+        background-color: var(--background-2);
+    }
 }

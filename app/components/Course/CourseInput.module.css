@@ -4,6 +4,10 @@
     justify-content: space-between;
 }
 
+.form Input{
+    background-color: var(--background-1);
+}
+
 .form > div, .submit {
     flex-basis: 100%;
 }

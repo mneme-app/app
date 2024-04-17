@@ -33,9 +33,10 @@
     font-weight: 100;
 }
 .column label{
-    font-size: 25px;
+    font-size: 11px;
     font-family: var(--font-heading);
     font-weight: 600;
+    margin-bottom: 15px;
 }
 
 .tags,
@@ -67,4 +68,8 @@
 
 .sourceLink:hover {
     background-color: var(--background-1);
+}
+
+@media only screen and (max-width: 480px)  {
+    
 }

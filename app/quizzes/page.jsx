@@ -128,14 +128,6 @@ export default async function QuizzesPage({ searchParams }) {
                     </div>
                 </section>
             )}
-
-            {user && (
-                <section>
-                    <h3>Create new quiz</h3>
-
-                    <QuizInput />
-                </section>
-            )}
         </main>
     );
 }
