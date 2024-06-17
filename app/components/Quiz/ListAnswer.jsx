@@ -83,7 +83,6 @@ export function ListAnswer({
             }
 
             const resJson = await response.json();
-            console.log(resJson);
             const message = resJson.message;
             setIncorrectIndexes(message.incorrectIndexes);
             setResponseStatus("complete");
@@ -98,10 +97,10 @@ export function ListAnswer({
     let label, color, icon;
     if (isFlashcard) {
         label = showAnswer ? "Return to Your Answers" : "Show Correct Answers";
-        color = showAnswer ? "var(--accent-3)" : undefined;
+        color = showAnswer ? "var(--success)" : undefined;
     } else if (responseStatus === "complete") {
         label = incorrectIndexes.length ? "Incorrect" : "Correct";
-        color = incorrectIndexes.length ? "var(--accent-2)" : "var(--accent-3)";
+        color = incorrectIndexes.length ? "var(--error)" : "var(--success)";
         icon = incorrectIndexes.length ? faXmark : faCheck;
     } else {
         label = "Check Answer";
@@ -168,8 +167,7 @@ export function ListAnswer({
 
             {!responseCorrect &&
                 responseStatus === "complete" &&
-                quiz.hints &&
-                quiz.hints.length > 0 &&
+                quiz.hints?.length > 0 &&
                 failures > 2 && (
                     <div data-type="hints">
                         <p>You're having some trouble. Here are some hints:</p>

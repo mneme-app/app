@@ -77,7 +77,6 @@ export default function BlankableInput({
                 words[index].word &&
                 wordObj.word === words[index].word
             ) {
-                // console.log('words match')
                 return;
             }
             if (
@@ -85,17 +84,14 @@ export default function BlankableInput({
                 words[index].punctuation &&
                 wordObj.punctuation === words[index].punctuation
             ) {
-                // console.log('punctuations match')
                 return;
             }
             if (wordObj.word && words[index].punctuation) {
-                // console.log('mismatch word v punct', index, promptArray.length, words.length)
                 if (promptArray.length > words.length) {
                     words.splice(index, 0, {
                         word: wordObj.word,
                         isBlank: false,
                     });
-                    // console.log(`added`, words[index])
                 } else if (promptArray.length === words.length) {
                     console.log(
                         "change is not word. wut do we do???",
@@ -107,12 +103,10 @@ export default function BlankableInput({
                 }
             }
             if (wordObj.punctuation && words[index].word) {
-                // console.log('mismatch punct v word', index, promptArray.length, words.length)
                 if (promptArray.length > words.length) {
                     words.splice(index, 0, {
                         punctuation: wordObj.punctuation,
                     });
-                    // console.log(`added`, words[index])
                 } else if (promptArray.length === words.length) {
                     console.log(
                         "change is not word. wut do we do???",
@@ -124,34 +118,27 @@ export default function BlankableInput({
                 }
             }
             if (wordObj.word !== words[index].word) {
-                // console.log(`${wordObj.word} does not match ${words[index].word}`, index, promptArray.length, words.length)
                 if (promptArray.length > words.length) {
                     words.splice(index, 0, {
                         word: wordObj.word,
                         isBlank: false,
                     });
-                    // console.log(`added`, words[index])
                 } else if (promptArray.length === words.length) {
                     words[index].word = wordObj.word;
-                    // console.log('cahnged', words[index])
                 } else {
                     let discard = words.splice(index, 3, {
                         word: wordObj.word,
                         isBlank: false,
                     });
-                    // console.log('deleted', discard)
                 }
             }
             if (wordObj.punctuation !== words[index].punctuation) {
-                // console.log(`${wordObj.punctuation} does not match ${words[index].punctuation}`, index, promptArray.length, words.length)
                 if (promptArray.length > words.length) {
                     words.splice(index, 0, {
                         punctuation: wordObj.punctuation,
                     });
-                    // console.log(`added`, words[index])
                 } else if (promptArray.length === words.length) {
                     words[index].punctuation = wordObj.punctuation;
-                    // console.log('cahnged', words[index])
                 } else {
                     console.log("when do we delete?");
                 }
@@ -248,7 +235,6 @@ export default function BlankableInput({
             // }
         });
 
-        // console.log(words)
         setPromptWords(words);
     }
 

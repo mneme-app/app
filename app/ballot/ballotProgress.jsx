@@ -31,12 +31,10 @@ export function BallotProgress({ questions, motions, ballots }) {
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        console.log("intersecting ", entry.target.id);
                         const id = entry.target.id;
                         const link = document.querySelector(`a[href="#${id}"]`);
                         link.classList.add(styles.active);
                     } else {
-                        console.log("not intersecting ", entry.target.id);
                         const id = entry.target.id;
                         const link = document.querySelector(`a[href="#${id}"]`);
                         link.classList.remove(styles.active);

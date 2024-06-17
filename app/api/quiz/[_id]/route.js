@@ -85,7 +85,6 @@ export async function POST(req, { params }) {
             message: {
                 isCorrect,
                 incorrectIndexes,
-                user,
                 quiz: quizInUser,
             },
         });
@@ -123,9 +122,7 @@ export async function DELETE(req, { params }) {
 
         const deletion = await Quiz.deleteOne({ _id });
         if (deletion.deletedCount === 0) {
-            console.error(
-                `Unable to delete quiz with id ${_id}`,
-            );
+            console.error(`Unable to delete quiz with id ${_id}`);
             return NextResponse.json(
                 {
                     message: `Unable to delete quiz with id ${_id}`,

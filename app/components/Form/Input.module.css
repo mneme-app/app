@@ -4,10 +4,17 @@
     /* max-width: 500px; */
 }
 
-.wrapper.inline {
+.inline {
     display: inline-flex;
     width: fit-content;
-    margin: 0 5px 5px;
+    margin: 0 5px;
+    height: 24px;
+}
+
+.inline > .container > *:not(ul) {
+    min-height: 24px;
+    height: 24px;
+    padding: 4px 6px;
 }
 
 .wrapper.toggle {

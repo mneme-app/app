@@ -90,7 +90,6 @@ export function Verbatim({
             }
 
             const resJson = await response.json();
-            console.log(resJson);
             const message = resJson.message;
             setIncorrectIndexes(message.incorrectIndexes);
             setResponseStatus("complete");

@@ -27,8 +27,6 @@ export async function POST(req) {
             color: 14427686,
         };
 
-        console.log(embed);
-
         const response = await fetch(`${webhookUrl}?wait=true`, {
             method: "POST",
             headers: {

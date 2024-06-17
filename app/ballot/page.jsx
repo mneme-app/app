@@ -60,8 +60,11 @@ export default async function BallotPage() {
                             id={point.heading}
                         >
                             <h2>
-                                <a href={`#${point.heading}`}>
-                                    {point.heading}{" "}
+                                {point.heading}{" "}
+                                <a
+                                    href={`#${point.heading}`}
+                                    title={`Link to ${point.heading}`}
+                                >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24"

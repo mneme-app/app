@@ -34,7 +34,7 @@ export function QuizInput({ quiz }) {
     const addAlert = useAlerts((state) => state.addAlert);
 
     const user = useStore((state) => state.user);
-    const canDelete = quiz && quiz.createdBy === user.id;
+    const canDelete = quiz && quiz.createdBy === user?.id;
 
     useEffect(() => {
         if (!quiz) return;

@@ -94,6 +94,7 @@
     line-height: 28px;
     font-weight: 600;
     word-wrap: break-word;
+    margin-bottom: 12px;
 }
 
 .textContent > header > h5 {
@@ -152,11 +153,12 @@
     font-size: 14px;
     padding: 8px 12px;
     border-radius: 3px;
+    font-weight: 600;
     cursor: pointer;
     user-select: none;
     color: var(--accent-foreground);
     background-color: var(--accent-1);
-    transition: background-color 0.2s ease-in-out;
+    transition: background-color 0.15s ease-in-out;
 }
 
 .buttonContainer > *:hover {

@@ -153,7 +153,6 @@ export function Input({
 
             function handleMouseDown(e) {
                 if (!container.current.contains(e.target)) {
-                    console.log("click");
                     setShowChoices(false);
                 }
             }
@@ -172,7 +171,8 @@ export function Input({
             return choices.filter(
                 (c) =>
                     c &&
-                    c.toString().toLowerCase().includes(search.toLowerCase()),
+                    typeof c === "string" &&
+                    c.toLowerCase().includes(search.toLowerCase()),
             );
         }
 
@@ -217,8 +217,6 @@ export function Input({
                 className={`${styles.container} ${error ? styles.error : ""}`}
                 onMouseDown={() => {
                     input.current.focus();
-
-                    console.log(input.current);
 
                     if (type === "select" && readOnly) {
                         setShowChoices(!showChoices);

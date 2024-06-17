@@ -44,14 +44,7 @@ export function Card({
                             {(title || subtitle) && (
                                 <header>
                                     {title && (
-                                        <h4
-                                            style={{
-                                                marginBottom: subtitle
-                                                    ? "14px"
-                                                    : "0",
-                                            }}
-                                            title={title}
-                                        >
+                                        <h4 title={title}>
                                             {url ? (
                                                 url.startsWith("http") ? (
                                                     <a href={url}>
